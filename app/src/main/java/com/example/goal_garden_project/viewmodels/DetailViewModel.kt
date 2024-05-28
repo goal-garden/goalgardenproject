@@ -1,0 +1,23 @@
+package com.example.goal_garden_project.viewmodels
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+
+class DetailViewModel (//private val repository: MovieRepository, movieId:String
+) : ViewModel() {
+
+    //private val _movie = MutableStateFlow<MovieWithImages?>(null)
+    //val movie: StateFlow<MovieWithImages?> = _movie.asStateFlow()
+
+
+    init {
+        viewModelScope.launch {
+            //repository.getMovieById(movieId).distinctUntilChanged()
+            //    .collect { movie ->
+            //        _movie.value = movie
+            //    }
+        }
+    }
+
+}
