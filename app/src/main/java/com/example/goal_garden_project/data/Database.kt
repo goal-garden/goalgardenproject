@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.goal_garden_project.data.GoalDao
 import com.example.goal_garden_project.models.Goal
 
 @Database(
@@ -15,7 +16,7 @@ import com.example.goal_garden_project.models.Goal
 
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun goalDao(): Dao // Dao instance so that the DB knows about the Dao
+    abstract fun goalDao(): GoalDao // Dao instance so that the DB knows about the Dao
     // add more daos here if you have multiple tables
 
     // declare as singleton - companion objects are like static variables in Java

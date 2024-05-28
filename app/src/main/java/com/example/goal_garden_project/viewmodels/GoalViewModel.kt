@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 import kotlinx.coroutines.launch
-
-class FavoriteViewModel (//private val repository: MovieRepository
+//use for home and goal screen !!!!
+class GoalViewModel (//private val repository: MovieRepository
 ) : ViewModel() {
 
     //private val _movies = MutableStateFlow(listOf<MovieWithImages>())
     //val movies: StateFlow<List<MovieWithImages>> = _movies.asStateFlow()
+
+    //contain grouping after finished/not finished/not seeded
+
 
     init {
         viewModelScope.launch {

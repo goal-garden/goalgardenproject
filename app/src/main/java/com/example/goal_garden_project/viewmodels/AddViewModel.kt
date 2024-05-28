@@ -2,19 +2,18 @@ package com.example.goal_garden_project.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.goal_garden_project.models.Goal
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-//use for plant screen and detail screen!!!!
-class DetailViewModel (//private val repository: MovieRepository, movieId:String
+class AddViewModel (private val repository: GoalRepository, plantId:String
 ) : ViewModel() {
 
-    //just a query by id
-
-
-
-    //private val _movie = MutableStateFlow<MovieWithImages?>(null)
+    //private val _plant = MutableStateFlow<MovieWithImages?>(null)
     //val movie: StateFlow<MovieWithImages?> = _movie.asStateFlow()
 
+
+    //hier muss ich dann nur die liste von verfügbaren plants laden
 
     init {
         viewModelScope.launch {
@@ -22,6 +21,11 @@ class DetailViewModel (//private val repository: MovieRepository, movieId:String
             //    .collect { movie ->
             //        _movie.value = movie
             //    }
+        }
+    }
+    fun addGoal(goal: Goal) {
+        viewModelScope.launch {
+            repository.addGoal(goal)
         }
     }
 
