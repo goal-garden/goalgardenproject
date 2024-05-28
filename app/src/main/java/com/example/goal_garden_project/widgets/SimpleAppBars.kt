@@ -1,8 +1,18 @@
 package com.example.goal_garden_project.widgets
 
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -20,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -53,8 +64,9 @@ fun SimpleTopBar(text:String?, backButton:Boolean = false, navController:NavCont
     )
 }
 
+
 @Composable
-fun SimpleBottomBar(navController: NavController){    //eigenen funktion mainly for readability, kann man aber auch nochmal gebrauchen wenn man eine bottom bar mit den gleichen symbolen hat
+fun SimpleBottomBar(navController: NavController) {
     val screens = listOf(
         Screen.Task,
         Screen.List,
@@ -64,17 +76,37 @@ fun SimpleBottomBar(navController: NavController){    //eigenen funktion mainly 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    BottomAppBar(
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.primary,
-    ) {
-        IconsAdder(screens, currentDestination, navController)
+    Box{
+        Row(        //row with spacer is used because there is no functionality for padding bottomAppBars within their own modifier
+            Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomStart)
+                .background(Color.Gray)
+        ) {
+            BottomAppBar(
+                containerColor = Color.Gray,
+                //containerColor = MaterialTheme.colorScheme.background,
+                //contentColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.weight(1f) // This makes the BottomAppBar flexible
+            ) {
+                IconsAdder(screens, currentDestination, navController)
+            }
+            Spacer(modifier = Modifier.width(80.dp) ) // Reserve space for the add button
+        }
+
+        FloatingActionButton(
+            onClick = {navController.navigate(Screen.Add.route)},  // keeps the current screen in the back stack
+            modifier = Modifier
+                .offset(y = (-50).dp, x = (-30).dp) // Adjust this value to control how much the FAB overlaps the BottomAppBar
+                .align(Alignment.BottomEnd),
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Add")
+        }
     }
-
-    //TODO: add add-button
-
-
 }
+
 
 
 @Composable
