@@ -2,7 +2,11 @@ package com.example.goal_garden_project.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -17,22 +21,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.goal_garden_project.data.AppDatabase
+import com.example.goal_garden_project.data.GoalRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
-import com.example.goal_garden_project.viewmodels.AppDatabase
-
-import com.example.goal_garden_project.viewmodels.GoalRepository
-
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import kotlinx.coroutines.launch
-import java.util.Date
+
 
 @Composable
 fun AddScreen(navController: NavController) {
     val context = LocalContext.current
 
     val db = AppDatabase.getDatabase(LocalContext.current)
+
+
     val repository = GoalRepository(goalDao = db.goalDao())
     val factory = AddViewModelFactory(repository = repository)  //does Goal viewmodel suffy
     val viewModel: AddViewModel = viewModel(factory = factory)
@@ -157,7 +161,7 @@ fun AddScreen(navController: NavController) {
                             currentProgressionImageNumber = 0, // Default value for now
                             title = title,
                             description = description,
-                            date = Date(), // Default value for now
+                            //date = Date(), // Default value for now
                             tasks = tasks,
                             isFulfilled = false
                         )
@@ -174,4 +178,6 @@ fun AddScreen(navController: NavController) {
             }
         }
     }
+
+
 }

@@ -13,7 +13,7 @@ import java.util.Date
     val currentProgressionImageNumber: Int, //so the right picture gets displayed
     val title: String,
     val description: String,
-    val date: Date, //maybe?
+    //val date: Date, //maybe?      //save as milliseconds and convert it then to date
     val tasks: String, //later the TASK class
     var isFulfilled: Boolean = false,
      //later we could add parameter to change color of pot or form or whatsoever..

@@ -1,6 +1,5 @@
-package com.example.goal_garden_project.viewmodels
+package com.example.goal_garden_project.data
 
-import com.example.goal_garden_project.data.GoalDao
 import com.example.goal_garden_project.models.Goal
 import kotlinx.coroutines.flow.Flow
 

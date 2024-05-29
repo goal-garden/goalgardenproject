@@ -1,11 +1,9 @@
-package com.example.goal_garden_project.viewmodels
+package com.example.goal_garden_project.data
 
 import android.content.Context
-import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.goal_garden_project.data.GoalDao
 import com.example.goal_garden_project.models.Goal
 
 @Database(
