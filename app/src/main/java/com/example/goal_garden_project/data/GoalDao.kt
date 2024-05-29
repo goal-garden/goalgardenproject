@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface GoalDao {
     @Insert
-    fun addGoal(goal: Goal) //insert
+    suspend fun addGoal(goal: Goal) //insert
     @Update
-    suspend fun updateGoal(goal: Goal)        //im Video sagt er dasds wir die auch suspend machen sollen - woooooww das hat es wirklich gefixed
+    suspend fun updateGoal(goal: Goal)
     @Delete
-    fun deleteGoal(goal: Goal)
+    suspend fun deleteGoal(goal: Goal)
 
     @Transaction
     @Query("SELECT * FROM Goals")

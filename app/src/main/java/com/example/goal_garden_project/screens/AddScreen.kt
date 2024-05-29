@@ -50,6 +50,7 @@ fun AddScreen(navController: NavController) {
 
     val coroutineScope = rememberCoroutineScope()
 
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -66,8 +67,6 @@ fun AddScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text(text = "Add Goal", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 16.dp))
-
                 BasicTextField(
                     value = goalId,
                     onValueChange = { goalId = it },
