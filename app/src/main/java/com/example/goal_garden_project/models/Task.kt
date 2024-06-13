@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "Task",
+    tableName = "task",
     foreignKeys = [ForeignKey(
         entity = Goal::class,
         parentColumns = ["dbId"],

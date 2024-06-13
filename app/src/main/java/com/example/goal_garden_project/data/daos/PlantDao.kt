@@ -1,5 +1,6 @@
 package com.example.goal_garden_project.data.daos
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -9,7 +10,7 @@ import androidx.room.Update
 import com.example.goal_garden_project.models.Plant
 import com.example.goal_garden_project.models.PlantWithPictures
 import kotlinx.coroutines.flow.Flow
-
+@Dao
 interface PlantDao {
     @Transaction
     @Query("SELECT * FROM plant")

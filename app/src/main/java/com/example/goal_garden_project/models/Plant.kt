@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "Plant",
+    tableName = "plant",
     foreignKeys = [
         ForeignKey(
             entity = Plant::class,
@@ -20,11 +20,13 @@ import androidx.room.PrimaryKey
 data class Plant(
     @PrimaryKey(autoGenerate = true) val plantId: Long = 0,
     val name: String,
-    val description: String
+    val description: String? = null
 )
 
 //PlantID
 //front image
 //Plant Name - not necessary
 //number of progression steps - not necessary (could also be sql questioned)
+
+
 

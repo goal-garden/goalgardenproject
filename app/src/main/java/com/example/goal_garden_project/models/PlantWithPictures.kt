@@ -11,3 +11,23 @@ data class PlantWithPictures(
     )
     val pictures: List<Picture>
 )
+
+fun getPlants(): List<PlantWithPictures> {
+    return listOf(
+        PlantWithPictures(
+            plant = Plant(
+                1, "sunflower"
+            ), pictures = listOf(
+                Picture(1, 1, "sonnenb1", 0),
+                Picture(2, 1, "sonnenb2", 1),
+                Picture(3, 1, "sonnenb3", 2),
+                Picture(4, 1, "sonnenb4", 3),
+                Picture(5, 1, "sonnenb5", 4),
+            )
+        )
+    )
+
+
+
+    //add all plants available here
+}
