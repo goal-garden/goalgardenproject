@@ -14,10 +14,7 @@ import com.example.goal_garden_project.navigation.Screen
 @Database(
     entities = [Goal::class, Plant::class, Picture::class, Screen.Task::class], //thats how later more can be added: , MovieImage::class], // tables in the db       //brauch ich da nd auch noch movieWith images?
     version = 2, // schema version; whenever you change schema you have to increase the version number
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2)
-                     ],
-    exportSchema = true // for schema version history updates
+    exportSchema = false // for schema version history updates
 )
 
 abstract class AppDatabase : RoomDatabase() {
