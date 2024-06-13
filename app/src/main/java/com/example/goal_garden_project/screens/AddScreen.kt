@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
-import com.example.goal_garden_project.data.GoalRepository
+import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory

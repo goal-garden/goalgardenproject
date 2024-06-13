@@ -1,0 +1,52 @@
+package com.example.goal_garden_project.data.daos
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
+import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.models.GoalWithTasks
+import com.example.goal_garden_project.models.Picture
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface GoalDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addGoal(goal: Goal) //insert
+
+    @Update
+    suspend fun updateGoal(goal: Goal)
+
+    @Delete
+    suspend fun deleteGoal(goal: Goal)
+
+    @Query("SELECT * FROM Goals")
+    fun getAllGoals(): Flow<List<Goal>>
+
+    @Transaction
+    @Query("SELECT * FROM Goals WHERE dbId = :goalId")
+    fun getGoalWithTasksById(goalId: Long): Flow<GoalWithTasks>
+
+    @Transaction
+    @Query("SELECT * FROM Goals WHERE goalId = :goalId")
+    fun getGoalById(goalId: Long): Flow<Goal>
+
+    @Query("""
+        SELECT p.* FROM picture p 
+        INNER JOIN Goals g ON p.plantId = g.plantId 
+        WHERE g.dbId = :goalId AND p.progressionStage = g.imageProgressionNumber 
+        ORDER BY p.progressionStage DESC LIMIT 1
+    """)
+    fun getCurrentPlantImage(goalId: Long): Flow<Picture?>
+
+    @Transaction
+    @Query("SELECT * FROM Goals WHERE isFulfilled = 0")
+    fun getUnfinishedGoalsWithTasks(): Flow<List<GoalWithTasks>>
+
+    @Transaction
+    @Query("SELECT * FROM Goals WHERE isFulfilled = 1")
+    fun getFinishedGoalsWithTasks(): Flow<List<GoalWithTasks>>
+}

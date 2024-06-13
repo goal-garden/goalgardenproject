@@ -2,9 +2,8 @@ package com.example.goal_garden_project.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.goal_garden_project.data.GoalRepository
+import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class AddViewModel (private val repository: GoalRepository

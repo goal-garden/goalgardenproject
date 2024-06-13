@@ -1,15 +1,23 @@
 package com.example.goal_garden_project.data
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.goal_garden_project.data.daos.GoalDao
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.models.Picture
+import com.example.goal_garden_project.models.Plant
+import com.example.goal_garden_project.navigation.Screen
 
 @Database(
-    entities = [Goal::class], //thats how later more can be added: , MovieImage::class], // tables in the db       //brauch ich da nd auch noch movieWith images?
-    version = 1, // schema version; whenever you change schema you have to increase the version number
-    exportSchema = false // for schema version history updates
+    entities = [Goal::class, Plant::class, Picture::class, Screen.Task::class], //thats how later more can be added: , MovieImage::class], // tables in the db       //brauch ich da nd auch noch movieWith images?
+    version = 2, // schema version; whenever you change schema you have to increase the version number
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2)
+                     ],
+    exportSchema = true // for schema version history updates
 )
 
 abstract class AppDatabase : RoomDatabase() {

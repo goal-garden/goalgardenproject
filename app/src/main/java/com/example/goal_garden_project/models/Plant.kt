@@ -1,10 +1,30 @@
 package com.example.goal_garden_project.models
 
-class Plant {
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
-    //PlantID
-    //front image
-    //Plant Name - not necessary
-    //number of progression steps - not necessary (could also be sql questioned)
+@Entity(
+    tableName = "plant",
+    foreignKeys = [
+        ForeignKey(
+            entity = Plant::class,
+            parentColumns = ["plantId"],
+            childColumns = ["plantId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("plantId")]
+)
+data class Plant(
+    @PrimaryKey(autoGenerate = true) val plantId: Long = 0,
+    val name: String,
+    val description: String
+)
 
-}
+//PlantID
+//front image
+//Plant Name - not necessary
+//number of progression steps - not necessary (could also be sql questioned)
+
