@@ -9,10 +9,11 @@ import com.example.goal_garden_project.data.daos.GoalDao
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.models.Picture
 import com.example.goal_garden_project.models.Plant
-import com.example.goal_garden_project.navigation.Screen
+import com.example.goal_garden_project.models.Task
+
 
 @Database(
-    entities = [Goal::class, Plant::class, Picture::class, Screen.Task::class], //thats how later more can be added: , MovieImage::class], // tables in the db       //brauch ich da nd auch noch movieWith images?
+    entities = [Goal::class, Plant::class, Picture::class, Task::class], //thats how later more can be added: , MovieImage::class], // tables in the db       //brauch ich da nd auch noch movieWith images?
     version = 2, // schema version; whenever you change schema you have to increase the version number
     exportSchema = false // for schema version history updates
 )

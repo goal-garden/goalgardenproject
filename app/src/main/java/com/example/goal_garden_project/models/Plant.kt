@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "plant",
+    tableName = "Plant",
     foreignKeys = [
         ForeignKey(
             entity = Plant::class,

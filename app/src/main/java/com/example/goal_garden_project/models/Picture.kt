@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "picture",
+    tableName = "Picture",
     foreignKeys = [ForeignKey(
         entity = Plant::class,
         parentColumns = ["plantId"],

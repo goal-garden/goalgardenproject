@@ -28,6 +28,7 @@ import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import kotlinx.coroutines.launch
+import java.util.Date
 
 
 @Composable
@@ -155,13 +156,13 @@ fun AddScreen(navController: NavController) {
                 Button(
                     onClick = {
                         val goal = Goal(
-                            goalId = goalId,
-                            plantId = plantId,
-                            currentProgressionImageNumber = 0, // Default value for now
+                            goalId = goalId.toLong(),
+                            plantId = plantId.toLong(),
+                            imageProgressionNumber = 0, // Default value for now
                             title = title,
                             description = description,
-                            //date = Date(), // Default value for now
-                            tasks = tasks,
+                            date = Date().time.toInt(), // Default value for now
+                            //tasks = tasks,        //later
                             isFulfilled = false
                         )
                         coroutineScope.launch {
