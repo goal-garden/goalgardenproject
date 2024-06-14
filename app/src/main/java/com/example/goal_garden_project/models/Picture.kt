@@ -7,13 +7,16 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "picture",
+    /*
     foreignKeys = [ForeignKey(
         entity = Plant::class,
         parentColumns = ["plantId"],
         childColumns = ["plantId"],
         onDelete = ForeignKey.CASCADE
     )],
-    indices = [Index("pictureId")]
+
+     */
+    //indices = [Index("pictureId")]
 )
 data class Picture(
     //PictureID

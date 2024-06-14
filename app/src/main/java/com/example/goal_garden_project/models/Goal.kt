@@ -7,7 +7,7 @@ import java.util.Date
 
 @Entity(
     tableName = "Goals",
-    indices = [Index(value = ["goalId"], unique = true)]
+    //indices = [Index(value = ["goalId"], unique = true)]
 )
 data class Goal(
     @PrimaryKey(autoGenerate = true)       //Assign the id a default value of 0, which is necessary for the id to auto generate id values.

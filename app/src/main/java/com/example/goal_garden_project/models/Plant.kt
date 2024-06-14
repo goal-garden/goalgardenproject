@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "plant",
+    /*
     foreignKeys = [
         ForeignKey(
             entity = Plant::class,
@@ -15,7 +16,9 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("plantId")]
+
+     */
+    //indices = [Index("plantId")]
 )
 data class Plant(
     @PrimaryKey(autoGenerate = true) val plantId: Long = 0,

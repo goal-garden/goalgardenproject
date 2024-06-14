@@ -22,8 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
+import com.example.goal_garden_project.data.daos.PictureDao
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.models.Picture
+import com.example.goal_garden_project.models.Plant
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
@@ -167,6 +170,10 @@ fun AddScreen(navController: NavController) {
                         )
                         coroutineScope.launch {
                             viewModel.addGoal(goal)
+                            val pictureDao  = AppDatabase.getDatabase(context).pictureDao()
+                            pictureDao.addPicture(Picture(4, 4, "hello", 4))
+                            val plantDao = AppDatabase.getDatabase(context).plantDao()
+                            plantDao.addPlant(Plant(5, "uuu"))
                             Toast.makeText(context, "Goal added", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         }

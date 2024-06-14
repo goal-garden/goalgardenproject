@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.example.goal_garden_project.navigation.Navigation
 import com.example.goal_garden_project.ui.theme.GoalgardenprojectTheme
 import com.example.goal_garden_project.widgets.SimpleBottomBar
@@ -21,5 +23,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             Navigation()
         }
+
+            // Initialize WorkManager
+            //WorkManager.initialize(this, Configuration.Builder().build())
+
     }
 }

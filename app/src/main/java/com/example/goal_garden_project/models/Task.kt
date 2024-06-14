@@ -7,13 +7,15 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "task",
-    foreignKeys = [ForeignKey(
+    /*foreignKeys = [ForeignKey(
         entity = Goal::class,
         parentColumns = ["dbId"],
         childColumns = ["goalId"],
         onDelete = ForeignKey.CASCADE
     )],
     indices = [Index("goalId")]
+
+     */
 )
 data class Task(
     //taskID
