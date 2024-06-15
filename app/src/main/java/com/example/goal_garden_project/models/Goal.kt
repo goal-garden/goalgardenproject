@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.util.Date
 
 @Entity(
-    tableName = "Goals",
+    tableName = "goals",
     //indices = [Index(value = ["goalId"], unique = true)]
 )
 data class Goal(

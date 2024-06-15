@@ -23,30 +23,30 @@ interface GoalDao {
     @Delete
     suspend fun deleteGoal(goal: Goal)
 
-    @Query("SELECT * FROM Goals")
+    @Query("SELECT * FROM goals")
     fun getAllGoals(): Flow<List<Goal>>
 
     @Transaction
-    @Query("SELECT * FROM Goals WHERE dbId = :goalId")
+    @Query("SELECT * FROM goals WHERE dbId = :goalId")
     fun getGoalWithTasksById(goalId: Long): Flow<GoalWithTasks>
 
     @Transaction
-    @Query("SELECT * FROM Goals WHERE goalId = :goalId")
+    @Query("SELECT * FROM goals WHERE goalId = :goalId")
     fun getGoalById(goalId: Long): Flow<Goal>
 
     @Query("""
-        SELECT p.* FROM picture p 
-        INNER JOIN Goals g ON p.plantId = g.plantId 
+        SELECT p.* FROM pictures p 
+        INNER JOIN goals g ON p.plantId = g.plantId 
         WHERE g.dbId = :goalId AND p.progressionStage = g.imageProgressionNumber 
         ORDER BY p.progressionStage DESC LIMIT 1
     """)
     fun getCurrentPlantImage(goalId: Long): Flow<Picture?>
 
     @Transaction
-    @Query("SELECT * FROM Goals WHERE isFulfilled = 0")
+    @Query("SELECT * FROM goals WHERE isFulfilled = 0")
     fun getUnfinishedGoalsWithTasks(): Flow<List<GoalWithTasks>>
 
     @Transaction
-    @Query("SELECT * FROM Goals WHERE isFulfilled = 1")
+    @Query("SELECT * FROM goals WHERE isFulfilled = 1")
     fun getFinishedGoalsWithTasks(): Flow<List<GoalWithTasks>>
 }

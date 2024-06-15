@@ -10,10 +10,10 @@ import com.example.goal_garden_project.models.Task
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface TaskDao {
-    @Query("SELECT * FROM task WHERE goalId = :goalId")
+    @Query("SELECT * FROM tasks WHERE goalId = :goalId")
     fun getTasksForGoal(goalId: Long): Flow<List<Task>>
 
-    @Query("SELECT * FROM task WHERE taskId = :taskId")
+    @Query("SELECT * FROM tasks WHERE taskId = :taskId")
     fun getTaskById(taskId: Long): Flow<Task?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

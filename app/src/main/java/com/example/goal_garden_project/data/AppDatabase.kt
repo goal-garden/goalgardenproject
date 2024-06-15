@@ -20,7 +20,7 @@ import com.example.goal_garden_project.data.daos.PlantDao
 
 @Database(
     entities = [Goal::class, Plant::class, Picture::class, Task::class], //thats how later more can be added: , MovieImage::class], // tables in the db       //brauch ich da nd auch noch movieWith images?
-    version = 6, // schema version; whenever you change schema you have to increase the version number
+    version = 9, // schema version; whenever you change schema you have to increase the version number
     exportSchema = false // for schema version history updates
 )
 

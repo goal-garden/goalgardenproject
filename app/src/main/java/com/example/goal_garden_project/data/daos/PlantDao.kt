@@ -13,19 +13,19 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PlantDao {
     @Transaction
-    @Query("SELECT * FROM plant")
+    @Query("SELECT * FROM plants")
     fun getAllPlants(): Flow<List<Plant>>
 
     @Transaction
-    @Query("SELECT * FROM plant WHERE plantId = :plantId")
+    @Query("SELECT * FROM plants WHERE plantId = :plantId")
     fun getPlantById(plantId: Long): Flow<Plant>
 
     @Transaction
-    @Query("SELECT * FROM plant WHERE plantId = :plantId")
+    @Query("SELECT * FROM plants WHERE plantId = :plantId")
     fun getPlantWithPicturesById(plantId: Long): Flow<PlantWithPictures>
 
     @Transaction
-    @Query("SELECT * FROM plant")
+    @Query("SELECT * FROM plants")
     fun getAllPlantsWithPictures(): Flow<List<PlantWithPictures>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

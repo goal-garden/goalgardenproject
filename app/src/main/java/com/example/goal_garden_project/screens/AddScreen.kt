@@ -170,10 +170,7 @@ fun AddScreen(navController: NavController) {
                         )
                         coroutineScope.launch {
                             viewModel.addGoal(goal)
-                            val pictureDao  = AppDatabase.getDatabase(context).pictureDao()
-                            pictureDao.addPicture(Picture(4, 4, "hello", 4))
-                            val plantDao = AppDatabase.getDatabase(context).plantDao()
-                            plantDao.addPlant(Plant(5, "uuu"))
+
                             Toast.makeText(context, "Goal added", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         }

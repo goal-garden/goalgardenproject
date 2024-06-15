@@ -10,10 +10,10 @@ import com.example.goal_garden_project.models.Picture
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface PictureDao {
-    @Query("SELECT * FROM picture WHERE plantId = :plantId")
+    @Query("SELECT * FROM pictures WHERE plantId = :plantId")
     fun getPicturesForPlant(plantId: Long): Flow<List<Picture>>
 
-    @Query("SELECT * FROM picture WHERE pictureId = :pictureId")
+    @Query("SELECT * FROM pictures WHERE pictureId = :pictureId")
     fun getPictureById(pictureId: Long): Flow<Picture?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
