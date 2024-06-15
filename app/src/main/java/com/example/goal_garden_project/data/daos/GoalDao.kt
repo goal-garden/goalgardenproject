@@ -14,6 +14,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GoalDao {
+    data class GoalImageTuple(
+        val goalId: Long,
+        val imageUrl: String
+    )
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addGoal(goal: Goal) //insert
 
@@ -25,6 +29,9 @@ interface GoalDao {
 
     @Query("SELECT * FROM goals")
     fun getAllGoals(): Flow<List<Goal>>
+
+    @Query("SELECT plantId FROM goals")
+    fun getAllGoalPlantID(): Flow<List<Goal>>
 
     @Transaction
     @Query("SELECT * FROM goals WHERE dbId = :goalId")
@@ -41,6 +48,17 @@ interface GoalDao {
         ORDER BY p.progressionStage DESC LIMIT 1
     """)
     fun getCurrentPlantImage(goalId: Long): Flow<Picture?>
+
+    @Query("""
+        SELECT goalId, pictures.imageUrl
+    FROM goals
+    JOIN pictures ON goals.plantId = pictures.plantId
+    AND pictures.progressionStage = goals.imageProgressionNumber
+    LIMIT 1;
+    """)
+    fun getAllGoalImages(): Flow<List<GoalImageTuple>>
+
+
 
     @Transaction
     @Query("SELECT * FROM goals WHERE isFulfilled = 0")
