@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -50,7 +51,7 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
     val factory = GoalViewModelFactory()//repository = repository)
     val viewModel: GoalViewModel = viewModel(factory = factory)
     val coroutineScope = rememberCoroutineScope()
-
+    val context =  LocalContext.current
 
     // Collecting the images from the repository
     val imageListFlow = goalRepository.getAllGoalImages() // Assuming this returns Flow<List<Picture>>
@@ -70,21 +71,27 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 content = {
-                    items(imageList.count()) { image ->
+                    items(imageList) { image ->
+                        val imageResourceId =  context.resources.getIdentifier(image.imageUrl, "drawable", context.packageName)
                         Image(
-                            painter = painterResource(id = R.drawable.sonnenb1),
-                            contentDescription = imageList[image].imageUrl,
+                            painter = painterResource(id = imageResourceId),
+                            contentDescription = image.imageUrl,
                             modifier = Modifier.size(100.dp),
                             contentScale = ContentScale.Crop
                         )
+
+
                     }
 
 
                 }
             )
+
+
         }    }
 }
 

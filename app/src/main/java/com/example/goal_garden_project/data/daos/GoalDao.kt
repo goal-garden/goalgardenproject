@@ -30,8 +30,8 @@ interface GoalDao {
     @Query("SELECT * FROM goals")
     fun getAllGoals(): Flow<List<Goal>>
 
-    @Query("SELECT plantId FROM goals")
-    fun getAllGoalPlantID(): Flow<List<Goal>>
+    //@Query("SELECT plantId FROM goals")
+    //fun getAllGoalPlantID(): Flow<List<Goal>>
 
     @Transaction
     @Query("SELECT * FROM goals WHERE dbId = :goalId")

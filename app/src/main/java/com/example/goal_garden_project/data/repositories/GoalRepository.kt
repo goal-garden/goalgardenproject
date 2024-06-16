@@ -15,7 +15,7 @@ class GoalRepository(private val goalDao: GoalDao) {
 
         // Flow indicates a long running async operation with multiple values
         fun getAllGoals(): Flow<List<Goal>> = goalDao.getAllGoals()
-        fun getAllGoalPlantID(): Flow<List<Goal>> = goalDao.getAllGoalPlantID()
+        //fun getAllGoalPlantID(): Flow<List<Goal>> = goalDao.getAllGoalPlantID()
         fun getAllGoalImages():Flow<List<GoalDao.GoalImageTuple>> = goalDao.getAllGoalImages()
         fun getGoalWithTasksById(id: Long): Flow<GoalWithTasks?> = goalDao.getGoalWithTasksById(id)
         fun getFinishedGoals(): Flow<List<GoalWithTasks>> = goalDao.getFinishedGoalsWithTasks()
