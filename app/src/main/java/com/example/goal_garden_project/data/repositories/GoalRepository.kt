@@ -1,6 +1,8 @@
-package com.example.goal_garden_project.data
+package com.example.goal_garden_project.data.repositories
 
+import com.example.goal_garden_project.data.daos.GoalDao
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.models.GoalWithTasks
 import kotlinx.coroutines.flow.Flow
 
 class GoalRepository(private val goalDao: GoalDao) {
@@ -12,9 +14,8 @@ class GoalRepository(private val goalDao: GoalDao) {
 
         // Flow indicates a long running async operation with multiple values
         fun getAllGoals(): Flow<List<Goal>> = goalDao.getAllGoals()
-        fun getFinishedGoals(): Flow<List<Goal>> = goalDao.getFinishedGoals()
-        fun getNotFinishedGoals(): Flow<List<Goal>> = goalDao.getFinishedGoals()
-        fun getGoalById(id: String): Flow<Goal?> = goalDao.getGoalById(id)
-
+        fun getGoalWithTasksById(id: Long): Flow<GoalWithTasks?> = goalDao.getGoalWithTasksById(id)
+        fun getFinishedGoals(): Flow<List<GoalWithTasks>> = goalDao.getFinishedGoalsWithTasks()
+        fun getUnfinishedGoals(): Flow<List<GoalWithTasks>> = goalDao.getUnfinishedGoalsWithTasks()
 
 }

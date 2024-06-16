@@ -22,12 +22,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
-import com.example.goal_garden_project.data.GoalRepository
+import com.example.goal_garden_project.data.daos.PictureDao
+import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.models.Picture
+import com.example.goal_garden_project.models.Plant
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import kotlinx.coroutines.launch
+import java.util.Date
 
 
 @Composable
@@ -155,17 +159,18 @@ fun AddScreen(navController: NavController) {
                 Button(
                     onClick = {
                         val goal = Goal(
-                            goalId = goalId,
-                            plantId = plantId,
-                            currentProgressionImageNumber = 0, // Default value for now
+                            goalId = goalId.toLong(),
+                            plantId = plantId.toLong(),
+                            imageProgressionNumber = 0, // Default value for now
                             title = title,
                             description = description,
-                            //date = Date(), // Default value for now
-                            tasks = tasks,
+                            date = Date().time.toInt(), // Default value for now
+                            //tasks = tasks,        //later
                             isFulfilled = false
                         )
                         coroutineScope.launch {
                             viewModel.addGoal(goal)
+
                             Toast.makeText(context, "Goal added", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         }

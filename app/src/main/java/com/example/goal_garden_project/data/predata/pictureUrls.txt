@@ -1,0 +1,5 @@
+com/example/goal_garden_project/data/predata/sonnenb1.png
+com/example/goal_garden_project/data/predata/sonnenb2.png
+com/example/goal_garden_project/data/predata/sonnenb3.png
+com/example/goal_garden_project/data/predata/sonnenb4.png
+com/example/goal_garden_project/data/predata/sonnenb5.png

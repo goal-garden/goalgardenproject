@@ -2,7 +2,7 @@ package com.example.goal_garden_project.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.goal_garden_project.data.GoalRepository
+import com.example.goal_garden_project.data.repositories.GoalRepository
 
 class AddViewModelFactory(private val repository: GoalRepository
  ): ViewModelProvider.Factory {

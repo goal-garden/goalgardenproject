@@ -18,6 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.goal_garden_project.data.AppDatabase
+import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.viewmodels.GoalViewModel
 import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
@@ -27,8 +29,8 @@ import com.example.goal_garden_project.widgets.SimpleTopBar
 @Composable
 fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel) {
 
-    //val db = MovieDatabase.getDatabase(LocalContext.current)
-    //val repository = MovieRepository(movieDao = db.movieDao())
+    val db = AppDatabase.getDatabase(LocalContext.current)
+    val repository = GoalRepository(goalDao = db.goalDao())
     val factory = GoalViewModelFactory()//repository = repository)
     val viewModel: GoalViewModel = viewModel(factory = factory)
 
