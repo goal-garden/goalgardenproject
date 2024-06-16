@@ -13,9 +13,10 @@ import androidx.navigation.NavController
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
+import com.example.goal_garden_project.widgets.SimpleTopBar
 
 @Composable
-fun DetailScreen(navController: NavController){//, moviesViewModel: HomeViewModel) {
+fun DetailScreen(goalId: Long, navController: NavController){//, moviesViewModel: HomeViewModel) {
 
     //val db = MovieDatabase.getDatabase(LocalContext.current)
     //val repository = MovieRepository(movieDao = db.movieDao())
@@ -25,9 +26,8 @@ fun DetailScreen(navController: NavController){//, moviesViewModel: HomeViewMode
     Scaffold(
         modifier= Modifier
             .fillMaxSize(),
-        bottomBar = {
-            SimpleBottomBar(navController)
-        },
+        topBar = { SimpleTopBar(text = goalId.toString(), backButton = true, navController = navController)},
+
     ){
             innerPadding ->
         Box(
@@ -36,7 +36,7 @@ fun DetailScreen(navController: NavController){//, moviesViewModel: HomeViewMode
                 .padding(innerPadding)
         ) {
             Text(
-                text = "Hallo",
+                text = "Detail",
                 modifier = Modifier.align(Alignment.Center)
             )
         }    }

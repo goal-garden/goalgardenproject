@@ -3,6 +3,7 @@ package com.example.goal_garden_project.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,6 +47,7 @@ import com.example.goal_garden_project.data.daos.GoalDao
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.PictureRepository
 import com.example.goal_garden_project.data.repositories.PlantRepository
+import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.viewmodels.GoalViewModel
 import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
@@ -84,7 +86,6 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
         ) {
 
 
-
             val chunkedImages = imageList.chunked(3)
             val rowsToShow = 4
 
@@ -108,8 +109,13 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
                                     contentDescription = image.imageUrl,
                                     modifier = Modifier
                                         .size(130.dp)
-                                        .padding(5.dp),
+                                        .padding(5.dp)
+                                        .clickable {
+                                            // Navigate to another destination
+                                            navController.navigate(Screen.Detail.route.replace("{goalId}", image.goalId.toString()))
+                                        },
                                     contentScale = ContentScale.Crop
+
                                 )
                             }
                             // Add empty boxes to fill the row if it's not complete
