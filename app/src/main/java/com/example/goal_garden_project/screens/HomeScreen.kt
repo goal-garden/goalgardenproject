@@ -110,9 +110,8 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
                                         .padding(5.dp)
                                         .clickable {
                                             // Navigate to another destination
-                                            println("hier ist noch alles richtig!!!")
-                                            println(image.goalId.toString())
-                                            navController.navigate(Screen.Detail.route.replace("{goalId}", image.goalId.toString()))
+
+                                            navController.navigate(Screen.Plant.route.replace("{goalId}", image.goalId.toString()))
                                         },
                                     contentScale = ContentScale.Crop
 
