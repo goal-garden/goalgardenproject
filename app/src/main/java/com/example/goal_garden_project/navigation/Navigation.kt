@@ -40,7 +40,8 @@ fun Navigation() {
             route = Screen.Detail.route,
             arguments = listOf(navArgument(name = "goalId") {type = NavType.StringType})
         ) { backStackEntry ->
-            DetailScreen(goalId = backStackEntry.arguments?.getString("movieId")?.toLong() ?: 0, navController)
+            DetailScreen(goalId = backStackEntry.arguments?.getString("goalId")?.toLong() ?: 0, navController)
+
         }
 
     }

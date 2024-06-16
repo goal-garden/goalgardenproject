@@ -28,8 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+
 import androidx.compose.runtime.rememberCoroutineScope
 
 import androidx.compose.ui.Modifier
@@ -51,8 +50,7 @@ import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.viewmodels.GoalViewModel
 import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.launch
+
 
 @Composable
 fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel) {
@@ -66,7 +64,7 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
     val coroutineScope = rememberCoroutineScope()
     val context =  LocalContext.current
 
-    // Collecting the images from the repository
+    // Collecting the images from the repository sollte später vom viewmodell gemacht werden
     val imageListFlow = goalRepository.getAllGoalImages() // Assuming this returns Flow<List<Picture>>
     val imageList by imageListFlow.collectAsState(initial = emptyList())
 
@@ -112,6 +110,8 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
                                         .padding(5.dp)
                                         .clickable {
                                             // Navigate to another destination
+                                            println("hier ist noch alles richtig!!!")
+                                            println(image.goalId.toString())
                                             navController.navigate(Screen.Detail.route.replace("{goalId}", image.goalId.toString()))
                                         },
                                     contentScale = ContentScale.Crop

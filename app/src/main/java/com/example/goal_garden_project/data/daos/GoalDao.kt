@@ -40,14 +40,27 @@ interface GoalDao {
     @Transaction
     @Query("SELECT * FROM goals WHERE goalId = :goalId")
     fun getGoalById(goalId: Long): Flow<Goal>
-
+/*
     @Query("""
-        SELECT p.* FROM pictures p 
-        INNER JOIN goals g ON p.plantId = g.plantId 
+        SELECT p.imageUrl FROM pictures p 
+        JOIN goals g ON p.plantId = g.plantId
         WHERE g.dbId = :goalId AND p.progressionStage = g.imageProgressionNumber 
         ORDER BY p.progressionStage DESC LIMIT 1
     """)
-    fun getCurrentPlantImage(goalId: Long): Flow<Picture?>
+    fun getCurrentPlantImageUrl(goalId: Long): Flow<String?>
+
+ */
+
+    @Query("""
+        SELECT p.imageUrl FROM pictures p 
+        JOIN goals g ON p.plantId = g.plantId 
+        AND p.progressionStage = g.imageProgressionNumber 
+        WHERE g.goalId = :goalId 
+        LIMIT 1
+    """)
+    fun getCurrentPlantImageUrl(goalId: Long): Flow<String?>
+
+
 
     @Query("""
         SELECT goalId, pictures.imageUrl
