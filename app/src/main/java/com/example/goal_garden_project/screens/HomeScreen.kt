@@ -2,15 +2,24 @@ package com.example.goal_garden_project.screens
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -72,24 +83,60 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
                 .padding(innerPadding)
         ) {
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                content = {
-                    items(imageList) { image ->
-                        val imageResourceId =  context.resources.getIdentifier(image.imageUrl, "drawable", context.packageName)
-                        Image(
-                            painter = painterResource(id = imageResourceId),
-                            contentDescription = image.imageUrl,
-                            modifier = Modifier.size(100.dp),
-                            contentScale = ContentScale.Crop
+
+
+            val chunkedImages = imageList.chunked(3)
+            val rowsToShow = 4
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // Iterate over a range to ensure at least 4 rows are displayed
+                itemsIndexed((0 until rowsToShow).toList()) { index, _ ->
+                    // Check if there are images for the current row index
+                    val rowImages = chunkedImages.getOrNull(index)
+                    Column {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            rowImages?.forEach { image ->
+                                val imageResourceId = context.resources.getIdentifier(
+                                    image.imageUrl, "drawable", context.packageName
+                                )
+                                Image(
+                                    painter = painterResource(id = imageResourceId),
+                                    contentDescription = image.imageUrl,
+                                    modifier = Modifier
+                                        .size(130.dp)
+                                        .padding(5.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            // Add empty boxes to fill the row if it's not complete
+                            if (rowImages == null) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(130.dp)
+                                            .padding(5.dp),
+                                    )
+                            }
+                        }
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    horizontal = 10.dp, vertical = 15.dp
+                                )
+                                .height(4.dp)
+                                .background(Color.DarkGray),
                         )
-
-
                     }
-
-
                 }
-            )
+            }
+
+
+
+
 
 
         }    }
