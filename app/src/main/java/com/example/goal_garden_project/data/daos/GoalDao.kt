@@ -67,7 +67,6 @@ interface GoalDao {
     FROM goals
     JOIN pictures ON goals.plantId = pictures.plantId
     AND pictures.progressionStage = goals.imageProgressionNumber
-    LIMIT 1;
     """)
     fun getAllGoalImages(): Flow<List<GoalImageTuple>>
 
