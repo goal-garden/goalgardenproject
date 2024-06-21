@@ -12,7 +12,7 @@ class SeedDatabaseWorker(context: Context, params: WorkerParameters) :
 
     override suspend fun doWork(): Result {
         try {
-            println("heeeeeeeeeeeeeeeeeeeeeeellooo")
+
             val plantDao = AppDatabase.getDatabase(applicationContext).plantDao()
             val pictureDao  = AppDatabase.getDatabase(applicationContext).pictureDao()
             getPlants().forEach { plant ->

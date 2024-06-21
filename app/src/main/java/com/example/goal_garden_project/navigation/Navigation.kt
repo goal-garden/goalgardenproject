@@ -11,6 +11,7 @@ import com.example.goal_garden_project.screens.DetailScreen
 import com.example.goal_garden_project.screens.GoalScreen
 import com.example.goal_garden_project.screens.HomeScreen
 import com.example.goal_garden_project.screens.ListScreen
+import com.example.goal_garden_project.screens.PlantScreen
 import com.example.goal_garden_project.screens.TaskScreen
 
 @Composable
@@ -36,17 +37,21 @@ fun Navigation() {
         composable(route = Screen.List.route){
             ListScreen(navController = navController)//, moviesViewModel)
         }
-
-
-        /*
         composable(
             route = Screen.Detail.route,
-            arguments = listOf(navArgument(name = "movieId") {type = NavType.StringType})
+            arguments = listOf(navArgument(name = "goalId") {type = NavType.StringType})
         ) { backStackEntry ->
-            DetailScreen(movieId = backStackEntry.arguments?.getString("movieId"), navController)
+            DetailScreen(goalId = backStackEntry.arguments?.getString("goalId")?.toLong() ?: 0, navController)
+
+        }
+        composable(
+            route = Screen.Plant.route,
+            arguments = listOf(navArgument(name = "goalId") {type = NavType.StringType})
+        ) { backStackEntry ->
+            PlantScreen(goalId = backStackEntry.arguments?.getString("goalId")?.toLong() ?: 0, navController)
+
         }
 
-         */
     }
 }
 
