@@ -53,30 +53,30 @@ import com.example.goal_garden_project.widgets.SimpleBottomBar
 
 
 @Composable
-fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel) {
+fun HomeScreen(navController: NavController) {//, moviesViewModel: HomeViewModel) {
 
     val db = AppDatabase.getDatabase(LocalContext.current)
     val goalRepository = GoalRepository(goalDao = db.goalDao())
     val plantRepository = PlantRepository(plantDao = db.plantDao())
     val pictureRepository = PictureRepository(pictureDao = db.pictureDao())
-    val factory = GoalViewModelFactory()//repository = repository)
+    val factory = GoalViewModelFactory(repository = goalRepository)
     val viewModel: GoalViewModel = viewModel(factory = factory)
     val coroutineScope = rememberCoroutineScope()
-    val context =  LocalContext.current
+    val context = LocalContext.current
 
-    // Collecting the images from the repository sollte später vom viewmodell gemacht werden
-    val imageListFlow = goalRepository.getAllGoalImages() // Assuming this returns Flow<List<Picture>>
+    // Collecting the images from the repository should be done by the view model
+    val imageListFlow =
+        goalRepository.getAllGoalImages() // Assuming this returns Flow<List<Picture>>
     val imageList by imageListFlow.collectAsState(initial = emptyList())
 
 
     Scaffold(
-        modifier= Modifier
+        modifier = Modifier
             .fillMaxSize(),
         bottomBar = {
             SimpleBottomBar(navController)
         },
-    ){
-            innerPadding ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -111,7 +111,12 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
                                         .clickable {
                                             // Navigate to another destination
 
-                                            navController.navigate(Screen.Plant.route.replace("{goalId}", image.goalId.toString()))
+                                            navController.navigate(
+                                                Screen.Plant.route.replace(
+                                                    "{goalId}",
+                                                    image.goalId.toString()
+                                                )
+                                            )
                                         },
                                     contentScale = ContentScale.Crop
 
@@ -119,11 +124,11 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
                             }
                             // Add empty boxes to fill the row if it's not complete
                             if (rowImages == null) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(130.dp)
-                                            .padding(5.dp),
-                                    )
+                                Box(
+                                    modifier = Modifier
+                                        .size(130.dp)
+                                        .padding(5.dp),
+                                )
                             }
                         }
                         Spacer(
@@ -140,11 +145,8 @@ fun HomeScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
             }
 
 
-
-
-
-
-        }    }
+        }
+    }
 }
 
 

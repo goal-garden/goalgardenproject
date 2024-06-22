@@ -34,7 +34,7 @@ interface GoalDao {
     //fun getAllGoalPlantID(): Flow<List<Goal>>
 
     @Transaction
-    @Query("SELECT * FROM goals WHERE dbId = :goalId")
+    @Query("SELECT * FROM goals WHERE goalId = :goalId")
     fun getGoalWithTasksById(goalId: Long): Flow<GoalWithTasks>
 
     @Transaction

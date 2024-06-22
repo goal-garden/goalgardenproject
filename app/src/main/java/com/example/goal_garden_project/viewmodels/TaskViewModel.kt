@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 
 import kotlinx.coroutines.launch
 //use for task screen
-class TaslViewModel (//private val repository: MovieRepository
+class TaskViewModel (//private val repository: MovieRepository
 ) : ViewModel() {
 
     //private val _movies = MutableStateFlow(listOf<MovieWithImages>())

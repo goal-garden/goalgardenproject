@@ -63,19 +63,17 @@ fun PlantScreen(goalId: Long, navController: NavController){//, moviesViewModel:
     val goalRepository = GoalRepository(goalDao = db.goalDao())
     val plantRepository = PlantRepository(plantDao = db.plantDao())
     val pictureRepository = PictureRepository(pictureDao = db.pictureDao())
-    val factory = DetailViewModelFactory(repository = goalRepository, goalId=goalId)
+    val factory = DetailViewModelFactory(repository = goalRepository)
     val viewModel: DetailViewModel = viewModel(factory = factory)
     val coroutineScope = rememberCoroutineScope()
     val context =  LocalContext.current
 
-
-    println(viewModel.hello)
-    println(viewModel.imageUrl)
+//    println(viewModel.imageUrl)
 
     //this doesnt work  and i dont get why
-    val imageUrlState by viewModel.imageUrl.collectAsState()
-    println("heeeeeeeellllllllllooooooooooo")
-    println(imageUrlState)
+//    val imageUrlState by viewModel.imageUrl.collectAsState()
+//    println("heeeeeeeellllllllllooooooooooo")
+//    println(imageUrlState)
 
     var showDialog by remember { mutableStateOf(false) }
 
