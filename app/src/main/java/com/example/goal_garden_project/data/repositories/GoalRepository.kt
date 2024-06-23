@@ -1,7 +1,9 @@
 package com.example.goal_garden_project.data.repositories
 
+import android.util.Log
 import com.example.goal_garden_project.data.daos.GoalDao
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.models.GoalWithPlantPicture
 import com.example.goal_garden_project.models.GoalWithTasks
 import com.example.goal_garden_project.models.Picture
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +18,11 @@ class GoalRepository(private val goalDao: GoalDao) {
         // Flow indicates a long running async operation with multiple values
         fun getAllGoals(): Flow<List<Goal>> = goalDao.getAllGoals()
         //fun getAllGoalPlantID(): Flow<List<Goal>> = goalDao.getAllGoalPlantID()
-        fun getAllGoalImages():Flow<List<GoalDao.GoalImageTuple>> = goalDao.getAllGoalImages()
+        fun getAllGoalsWithPlantPictures(): Flow<List<GoalWithPlantPicture>> {
+                Log.d("HELLOOOO", " getAllGoalsWithPlantPictures")
+                return goalDao.getGoalsWithPlantPictures()
+        }
+        //fun getAllGoalImages():Flow<List<GoalDao.GoalImageTuple>> = goalDao.getAllGoalImages()
         fun getCurrentPlantImage(id: Long):Flow<String?> = goalDao.getCurrentPlantImageUrl(id)
         fun getGoalWithTasksById(id: Long): Flow<GoalWithTasks?> = goalDao.getGoalWithTasksById(id)
         fun getGoalById(id:Long): Flow<Goal?> = goalDao.getGoalById(id)

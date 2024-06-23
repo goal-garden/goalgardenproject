@@ -22,11 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
-import com.example.goal_garden_project.data.daos.PictureDao
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
-import com.example.goal_garden_project.models.Picture
-import com.example.goal_garden_project.models.Plant
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
@@ -139,29 +136,12 @@ fun AddScreen(navController: NavController) {
                     }
                 )
 
-                BasicTextField(
-                    value = tasks,
-                    onValueChange = { tasks = it },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small)
-                                .padding(16.dp)
-                        ) {
-                            if (tasks.isEmpty()) Text("Tasks")
-                            innerTextField()
-                        }
-                    }
-                )
-
                 Button(
                     onClick = {
                         val goal = Goal(
-                            goalId = goalId.toLong(),
+//                            goalId = goalId.toLong(),
                             plantId = plantId.toLong(),
-                            imageProgressionNumber = 0, // Default value for now
+                            progressionStage = 0, // Default value for now
                             title = title,
                             description = description,
                             date = Date().time.toInt(), // Default value for now

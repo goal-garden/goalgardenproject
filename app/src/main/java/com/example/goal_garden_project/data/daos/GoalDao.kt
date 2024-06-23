@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.models.GoalWithPlantPicture
 import com.example.goal_garden_project.models.GoalWithTasks
 import com.example.goal_garden_project.models.Picture
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +19,7 @@ interface GoalDao {
         val goalId: Long,
         val imageUrl: String
     )
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addGoal(goal: Goal) //insert
 
@@ -30,9 +32,6 @@ interface GoalDao {
     @Query("SELECT * FROM goals")
     fun getAllGoals(): Flow<List<Goal>>
 
-    //@Query("SELECT plantId FROM goals")
-    //fun getAllGoalPlantID(): Flow<List<Goal>>
-
     @Transaction
     @Query("SELECT * FROM goals WHERE goalId = :goalId")
     fun getGoalWithTasksById(goalId: Long): Flow<GoalWithTasks>
@@ -40,36 +39,51 @@ interface GoalDao {
     @Transaction
     @Query("SELECT * FROM goals WHERE goalId = :goalId")
     fun getGoalById(goalId: Long): Flow<Goal>
-/*
-    @Query("""
-        SELECT p.imageUrl FROM pictures p 
-        JOIN goals g ON p.plantId = g.plantId
-        WHERE g.dbId = :goalId AND p.progressionStage = g.imageProgressionNumber 
-        ORDER BY p.progressionStage DESC LIMIT 1
-    """)
-    fun getCurrentPlantImageUrl(goalId: Long): Flow<String?>
 
- */
+    @Transaction
+    @Query(
+        """
+    SELECT g.*, p.*
+        FROM goals g
+        LEFT JOIN pictures p ON g.plantId = p.plantId 
+        AND g.progressionStage = p.progressionStage
+        """
+    )
+    fun getGoalsWithPlantPictures(): Flow<List<GoalWithPlantPicture>>
 
-    @Query("""
+
+    /*
+        @Query("""
+            SELECT p.imageUrl FROM pictures p
+            JOIN goals g ON p.plantId = g.plantId
+            WHERE g.dbId = :goalId AND p.progressionStage = g.imageProgressionNumber
+            ORDER BY p.progressionStage DESC LIMIT 1
+        """)
+        fun getCurrentPlantImageUrl(goalId: Long): Flow<String?>
+
+     */
+
+    @Query(
+        """
         SELECT p.imageUrl FROM pictures p 
         JOIN goals g ON p.plantId = g.plantId 
-        AND p.progressionStage = g.imageProgressionNumber 
+        AND p.progressionStage = g.progressionStage 
         WHERE g.goalId = :goalId 
         LIMIT 1
-    """)
+    """
+    )
     fun getCurrentPlantImageUrl(goalId: Long): Flow<String?>
 
 
-
-    @Query("""
+    @Query(
+        """
         SELECT goalId, pictures.imageUrl
     FROM goals
     JOIN pictures ON goals.plantId = pictures.plantId
-    AND pictures.progressionStage = goals.imageProgressionNumber
-    """)
+    AND pictures.progressionStage = goals.progressionStage
+    """
+    )
     fun getAllGoalImages(): Flow<List<GoalImageTuple>>
-
 
 
     @Transaction

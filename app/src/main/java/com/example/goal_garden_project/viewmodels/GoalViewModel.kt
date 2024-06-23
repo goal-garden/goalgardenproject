@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.models.GoalWithPlantPicture
 import com.example.goal_garden_project.models.GoalWithTasks
 import com.example.goal_garden_project.models.Picture
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +22,9 @@ class GoalViewModel(
     private val _goals = MutableStateFlow((listOf<Goal>()))
     val goals: StateFlow<List<Goal>> = _goals.asStateFlow()
 
-    private val _goalImages = MutableStateFlow(listOf<Picture>())
-    val goalImages: StateFlow<List<Picture>> = _goalImages.asStateFlow()
+    private val _goalsWithPlantPicture = MutableStateFlow<List<GoalWithPlantPicture>>(emptyList())
+    val goalsWithPlantPicture: StateFlow<List<GoalWithPlantPicture>> =
+        _goalsWithPlantPicture.asStateFlow()
 
     //contain grouping after finished/not finished/not seeded
     private val _unfinishedGoals = MutableStateFlow((listOf<Goal>()))
@@ -37,11 +39,12 @@ class GoalViewModel(
                 _goals.value = goals
             }
         }
-//        viewModelScope.launch {
-//            repository.getAllGoalImages().distinctUntilChanged().collect { images ->
-//                _goalImages.value = images
-//            }
-//        }
+        viewModelScope.launch {
+            repository.getAllGoalsWithPlantPictures().distinctUntilChanged()
+                .collect { goalsWithCurrentPlant ->
+                    _goalsWithPlantPicture.value = goalsWithCurrentPlant
+                }
+        }
     }
 
 }
