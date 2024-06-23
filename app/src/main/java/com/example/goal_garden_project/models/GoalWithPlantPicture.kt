@@ -4,11 +4,9 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 class GoalWithPlantPicture(
-    @Embedded
-    val goal: Goal,
-    @Relation(
-        parentColumn = "plantId",
-        entityColumn = "plantId",
-    )
-    val picture: Picture?
+    val pictureId: Int,
+    val plantId: Int,
+    val progressionStage: Int,
+    val imageUrl: String,
+    val goalId: Int
 )

@@ -43,10 +43,9 @@ interface GoalDao {
     @Transaction
     @Query(
         """
-    SELECT g.*, p.*
+    SELECT p.pictureId, p.plantId, p.progressionStage, p.imageUrl, g.goalId
         FROM goals g
-        LEFT JOIN pictures p ON g.plantId = p.plantId 
-        AND g.progressionStage = p.progressionStage
+        LEFT JOIN pictures p ON g.plantId = p.plantId AND g.progressionStage = p.progressionStage
         """
     )
     fun getGoalsWithPlantPictures(): Flow<List<GoalWithPlantPicture>>

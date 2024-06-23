@@ -82,11 +82,8 @@ fun HomeScreen(navController: NavController) {
                     ) {
                         // Iterate through the chunked row items
                         for (goalWithPlantPicture in rowItems) {
-                            val imageUrl = goalWithPlantPicture.picture?.imageUrl ?: ""
-                            Log.d(
-                                "goal object:",
-                                "${imageUrl}, goal progression: ${goalWithPlantPicture.goal.progressionStage}, plant progression ${goalWithPlantPicture.picture?.progressionStage}"
-                            )
+                            val imageUrl = goalWithPlantPicture.imageUrl
+
                             val imageResourceId = context.resources.getIdentifier(
                                 imageUrl, "drawable", context.packageName
                             )
@@ -105,7 +102,7 @@ fun HomeScreen(navController: NavController) {
                                             navController.navigate(
                                                 Screen.Plant.route.replace(
                                                     "{goalId}",
-                                                    goalWithPlantPicture.goal.goalId.toString()
+                                                    goalWithPlantPicture.goalId.toString()
                                                 )
                                             )
                                         },
