@@ -69,12 +69,7 @@ fun PlantScreen(goalId: Long, navController: NavController) {//, moviesViewModel
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-//    println(viewModel.imageUrl)
 
-    //this doesnt work  and i dont get why
-//    val imageUrlState by viewModel.imageUrl.collectAsState()
-//    println("heeeeeeeellllllllllooooooooooo")
-//    println(imageUrlState)
     LaunchedEffect(key1 = goalId) {
         viewModel.getGoalById(goalId)
         viewModel.getGoalByIdWithPicture(goalId)

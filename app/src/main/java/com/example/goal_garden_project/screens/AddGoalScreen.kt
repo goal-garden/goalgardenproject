@@ -68,32 +68,21 @@ fun AddScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                BasicTextField(
-                    value = goalId,
-                    onValueChange = { goalId = it },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small)
-                                .padding(16.dp)
-                        ) {
-                            if (goalId.isEmpty()) Text("Goal ID")
-                            innerTextField()
-                        }
-                    }
-                )
 
                 BasicTextField(
                     value = plantId,
                     onValueChange = { plantId = it },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small)
+                                .background(
+                                    MaterialTheme.colorScheme.surface,
+                                    MaterialTheme.shapes.small
+                                )
                                 .padding(16.dp)
                         ) {
                             if (plantId.isEmpty()) Text("Plant ID")
@@ -105,12 +94,17 @@ fun AddScreen(navController: NavController) {
                 BasicTextField(
                     value = title,
                     onValueChange = { title = it },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small)
+                                .background(
+                                    MaterialTheme.colorScheme.surface,
+                                    MaterialTheme.shapes.small
+                                )
                                 .padding(16.dp)
                         ) {
                             if (title.isEmpty()) Text("Title")
@@ -122,12 +116,17 @@ fun AddScreen(navController: NavController) {
                 BasicTextField(
                     value = description,
                     onValueChange = { description = it },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small)
+                                .background(
+                                    MaterialTheme.colorScheme.surface,
+                                    MaterialTheme.shapes.small
+                                )
                                 .padding(16.dp)
                         ) {
                             if (description.isEmpty()) Text("Description")
@@ -155,7 +154,9 @@ fun AddScreen(navController: NavController) {
                             navController.popBackStack()
                         }
                     },
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 16.dp)
                 ) {
                     Text("Add Goal")
                 }

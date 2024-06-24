@@ -98,9 +98,9 @@ interface GoalDao {
 
     @Transaction
     @Query("SELECT * FROM goals WHERE isFulfilled = 0")
-    fun getUnfinishedGoalsWithTasks(): Flow<List<GoalWithTasks>>
+    fun getUnfinishedGoals(): Flow<List<Goal>>
 
     @Transaction
     @Query("SELECT * FROM goals WHERE isFulfilled = 1")
-    fun getFinishedGoalsWithTasks(): Flow<List<GoalWithTasks>>
+    fun getFinishedGoals(): Flow<List<Goal>>
 }

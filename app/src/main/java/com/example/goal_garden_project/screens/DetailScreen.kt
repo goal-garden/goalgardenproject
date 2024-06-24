@@ -92,7 +92,7 @@ fun DetailScreen(goalId: Long, navController: NavController) {//, moviesViewMode
 
                     goalWithTasks.tasks.forEach { task ->
                         Text(
-                            text = "Task: ${task.name}",
+                            text = task.name,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }

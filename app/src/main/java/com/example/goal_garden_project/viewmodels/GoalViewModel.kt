@@ -1,5 +1,6 @@
 package com.example.goal_garden_project.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goal_garden_project.data.repositories.GoalRepository
@@ -33,18 +34,40 @@ class GoalViewModel(
     private val _finishedGoals = MutableStateFlow((listOf<Goal>()))
     val finishedGoals: StateFlow<List<Goal>> = _goals.asStateFlow()
 
+    private val _waitingToBeSeededGoals = MutableStateFlow((listOf<Goal>()))
+    val waitingToBeSeededGoals: StateFlow<List<Goal>> = _waitingToBeSeededGoals.asStateFlow()
+
     init {
         viewModelScope.launch {
             repository.getAllGoals().distinctUntilChanged().collect { goals ->
                 _goals.value = goals
+                Log.d("GoalViewModel", "All goals: $goals")
             }
         }
         viewModelScope.launch {
             repository.getAllGoalsWithPlantPictures().distinctUntilChanged()
-                .collect { goalsWithCurrentPlant ->
-                    _goalsWithPlantPicture.value = goalsWithCurrentPlant
+                .collect { goals ->
+                    _goalsWithPlantPicture.value = goals
                 }
         }
+        viewModelScope.launch {
+            repository.getUnfinishedGoals().distinctUntilChanged().collect { goals ->
+                _unfinishedGoals.value = goals
+                Log.d("GoalViewModel", "Unfinished goals: $goals")
+            }
+        }
+        viewModelScope.launch {
+            repository.getFinishedGoals().distinctUntilChanged().collect { goals ->
+                _finishedGoals.value = goals
+                Log.d("GoalViewModel", "Finished goals: $goals")
+            }
+        }
+//        viewModelScope.launch {
+//            repository.getUnseededGoals().distinctUntilChanged()
+//                .collect { goals ->
+//                    _waitingToBeSeededGoals.value = goals
+//                }
+//        }
     }
 
 }
