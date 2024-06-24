@@ -50,6 +50,17 @@ interface GoalDao {
     )
     fun getGoalsWithPlantPictures(): Flow<List<GoalWithPlantPicture>>
 
+    @Transaction
+    @Query(
+        """
+        SELECT p.pictureId, p.plantId, p.progressionStage, p.imageUrl, g.goalId
+        FROM goals g
+        LEFT JOIN pictures p ON g.plantId = p.plantId AND g.progressionStage = p.progressionStage
+        WHERE g.goalId = :id
+        """
+    )
+    fun getGoalByIdWithPlantPicture(id: Long): Flow<GoalWithPlantPicture>
+
 
     /*
         @Query("""

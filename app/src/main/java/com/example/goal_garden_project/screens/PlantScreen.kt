@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,7 +58,7 @@ import com.example.goal_garden_project.widgets.SimpleTopBar
 
 
 @Composable
-fun PlantScreen(goalId: Long, navController: NavController){//, moviesViewModel: HomeViewModel) {
+fun PlantScreen(goalId: Long, navController: NavController) {//, moviesViewModel: HomeViewModel) {
 
     val db = AppDatabase.getDatabase(LocalContext.current)
     val goalRepository = GoalRepository(goalDao = db.goalDao())
@@ -66,7 +67,7 @@ fun PlantScreen(goalId: Long, navController: NavController){//, moviesViewModel:
     val factory = DetailViewModelFactory(repository = goalRepository)
     val viewModel: DetailViewModel = viewModel(factory = factory)
     val coroutineScope = rememberCoroutineScope()
-    val context =  LocalContext.current
+    val context = LocalContext.current
 
 //    println(viewModel.imageUrl)
 
@@ -74,19 +75,33 @@ fun PlantScreen(goalId: Long, navController: NavController){//, moviesViewModel:
 //    val imageUrlState by viewModel.imageUrl.collectAsState()
 //    println("heeeeeeeellllllllllooooooooooo")
 //    println(imageUrlState)
+    LaunchedEffect(key1 = goalId) {
+        viewModel.getGoalById(goalId)
+        viewModel.getGoalByIdWithPicture(goalId)
+    }
 
     var showDialog by remember { mutableStateOf(false) }
-
-
-
+    val goalWithTasks by viewModel.specificGoal.collectAsState()
+    val goalWithPlantPicture by viewModel.goalWithPlantPicture.collectAsState()
+    val imageUrl = goalWithPlantPicture?.imageUrl
+    val imageResource = if (imageUrl != null) {
+        context.resources.getIdentifier(imageUrl, "drawable", context.packageName)
+    } else {
+        R.drawable.sonnenb5 // Replace with your default drawable resource
+    }
 
     Scaffold(
-        modifier= Modifier
+        modifier = Modifier
             .fillMaxSize(),
-        topBar = { SimpleTopBar(text = goalId.toString(), backButton = true, navController = navController) },
+        topBar = {
+            SimpleTopBar(
+                text = goalWithTasks?.goal?.title ?: "Loading...",
+                backButton = true,
+                navController = navController
+            )
+        },
 
-        ){
-            innerPadding ->
+        ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -100,10 +115,10 @@ fun PlantScreen(goalId: Long, navController: NavController){//, moviesViewModel:
             )),
 
  */
-            Column (modifier = Modifier.fillMaxSize()){
+            Column(modifier = Modifier.fillMaxSize()) {
 
                 Image(
-                    painter = painterResource(id = R.drawable.sonnenb1),
+                    painter = painterResource(id = imageResource),
                     contentDescription = "my-goal",
                     modifier = Modifier
                         .size(300.dp)
@@ -119,11 +134,16 @@ fun PlantScreen(goalId: Long, navController: NavController){//, moviesViewModel:
                     //horizontalArrangement = Arrangement.SpaceEvenly
 
                 ) {
-                    Box (contentAlignment = Alignment.BottomStart){
+                    Box(contentAlignment = Alignment.BottomStart) {
                         Button(
                             onClick = {
                                 // navigation  to another screen
-                                navController.navigate(Screen.Detail.route.replace("{goalId}", goalId.toString()))
+                                navController.navigate(
+                                    Screen.Detail.route.replace(
+                                        "{goalId}",
+                                        goalWithTasks?.goal?.goalId.toString()
+                                    )
+                                )
                             },
                             modifier = Modifier
                                 .padding(20.dp)
@@ -136,12 +156,18 @@ fun PlantScreen(goalId: Long, navController: NavController){//, moviesViewModel:
 
 
                             ) {
-                            Icon(imageVector = Screen.Detail.icon, contentDescription = "Navigate",  modifier = Modifier.size(36.dp))
+                            Icon(
+                                imageVector = Screen.Detail.icon,
+                                contentDescription = "Navigate",
+                                modifier = Modifier.size(36.dp)
+                            )
                         }
                     }
 
-                    Box (contentAlignment =
-                                Alignment.BottomEnd, modifier = Modifier.fillMaxWidth()){
+                    Box(
+                        contentAlignment =
+                        Alignment.BottomEnd, modifier = Modifier.fillMaxWidth()
+                    ) {
                         Button(
                             onClick = {
                                 showDialog = true
@@ -187,8 +213,6 @@ fun PlantScreen(goalId: Long, navController: NavController){//, moviesViewModel:
                     }
                 }
             }
-
-
 
 
         }
