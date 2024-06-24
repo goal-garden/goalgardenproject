@@ -1,20 +1,27 @@
 package com.example.goal_garden_project.models
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.Date
 
 @Entity(
     tableName = "goals",
-    //indices = [Index(value = ["goalId"], unique = true)]
+    foreignKeys = [
+        ForeignKey(
+            entity = Plant::class,
+            parentColumns = ["plantId"],
+            childColumns = ["plantId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index(value = ["goalId"]), Index(value = ["plantId"])]
 )
 data class Goal(
     @PrimaryKey(autoGenerate = true)       //Assign the id a default value of 0, which is necessary for the id to auto generate id values.
-    var dbId: Long = 0,
-    var goalId: Long,
+    var goalId: Long = 0,
     var plantId: Long,
-    var imageProgressionNumber: Int, //so the right picture gets displayed
+    var progressionStage: Int = 0, //so the right picture gets displayed, initially 0
     var title: String,
     var description: String,
     var date: Int,      //save as milliseconds and convert it then to date

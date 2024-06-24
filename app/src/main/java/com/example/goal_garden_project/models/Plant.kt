@@ -7,18 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "plants",
-    /*
-    foreignKeys = [
-        ForeignKey(
-            entity = Plant::class,
-            parentColumns = ["plantId"],
-            childColumns = ["plantId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-
-     */
-    //indices = [Index("plantId")]
+    indices = [Index(value = ["plantId"])]
 )
 data class Plant(
     @PrimaryKey(autoGenerate = true) val plantId: Long = 0,
@@ -28,8 +17,7 @@ data class Plant(
 
 //PlantID
 //front image
-//Plant Name - not necessary
-//number of progression steps - not necessary (could also be sql questioned)
+
 
 
 
