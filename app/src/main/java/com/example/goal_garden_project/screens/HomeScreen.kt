@@ -60,6 +60,7 @@ fun HomeScreen(navController: NavController) {
 
     val goalsWithPlantPicture by viewModel.goalsWithPlantPicture.collectAsState()
 
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -75,12 +76,14 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(goalsWithPlantPicture.chunked(3)) { rowItems ->
+                // Iterate through each row (you want 4 rows)
+                items((goalsWithPlantPicture.chunked(3) + List(4 - goalsWithPlantPicture.size / 3) { emptyList() })) { rowItems ->
+                    // Each chunk represents a row with 3 items or fewer (last row might have less than 3 items)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // Iterate through the chunked row items
+                        // Iterate through the 3 items in the row
                         for (goalWithPlantPicture in rowItems) {
                             val imageUrl = goalWithPlantPicture.imageUrl
 
@@ -91,7 +94,6 @@ fun HomeScreen(navController: NavController) {
                                 modifier = Modifier
                                     .weight(1f)
                                     .aspectRatio(1f)
-                                    .background(Color.LightGray)
                             ) {
                                 Image(
                                     painter = painterResource(id = imageResourceId),
@@ -117,7 +119,6 @@ fun HomeScreen(navController: NavController) {
                                 modifier = Modifier
                                     .weight(1f)
                                     .aspectRatio(1f)
-                                    .background(Color.LightGray)
                             )
                         }
                     }
@@ -126,9 +127,7 @@ fun HomeScreen(navController: NavController) {
                     Spacer(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                horizontal = 10.dp, vertical = 15.dp
-                            )
+                            .padding(horizontal = 10.dp, vertical = 15.dp)
                             .height(4.dp)
                             .background(Color.DarkGray),
                     )
