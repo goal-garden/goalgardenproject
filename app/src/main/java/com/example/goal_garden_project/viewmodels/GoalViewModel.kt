@@ -29,10 +29,10 @@ class GoalViewModel(
 
     //contain grouping after finished/not finished/not seeded
     private val _unfinishedGoals = MutableStateFlow((listOf<Goal>()))
-    val unfinishedGoals: StateFlow<List<Goal>> = _goals.asStateFlow()
+    val unfinishedGoals: StateFlow<List<Goal>> = _unfinishedGoals.asStateFlow()
 
     private val _finishedGoals = MutableStateFlow((listOf<Goal>()))
-    val finishedGoals: StateFlow<List<Goal>> = _goals.asStateFlow()
+    val finishedGoals: StateFlow<List<Goal>> = _finishedGoals.asStateFlow()
 
     private val _waitingToBeSeededGoals = MutableStateFlow((listOf<Goal>()))
     val waitingToBeSeededGoals: StateFlow<List<Goal>> = _waitingToBeSeededGoals.asStateFlow()
