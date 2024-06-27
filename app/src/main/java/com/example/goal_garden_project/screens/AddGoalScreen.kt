@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
+import com.example.goal_garden_project.data.repositories.PictureRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
@@ -39,7 +40,8 @@ fun AddScreen(navController: NavController) {
 
 
     val repository = GoalRepository(goalDao = db.goalDao())
-    val factory = AddViewModelFactory(repository = repository)  //does Goal viewmodel suffy
+    val repository2= PictureRepository(pictureDao = db.pictureDao())
+    val factory = AddViewModelFactory(repository = repository, repository2=repository2)  //does Goal viewmodel suffy
     val viewModel: AddViewModel = viewModel(factory = factory)
 
 
