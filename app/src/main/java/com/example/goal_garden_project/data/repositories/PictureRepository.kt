@@ -15,6 +15,6 @@ class PictureRepository(private val pictureDao: PictureDao) {
     fun getPictureById(pictureId: Long): Flow<Picture?> = pictureDao.getPictureById(pictureId)
 
 
-    fun getAllLastImages(): Flow<List<PictureDao.PicturePlant>> = pictureDao.getAllLastImages()
+    fun getAllLastImages(): Flow<List<Picture>> = pictureDao.getAllLastImages()
 
 }

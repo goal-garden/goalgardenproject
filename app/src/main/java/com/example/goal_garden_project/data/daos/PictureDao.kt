@@ -10,12 +10,7 @@ import com.example.goal_garden_project.models.Picture
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface PictureDao {
-    data class PicturePlant(
-        val pictureId: Long,
-        val plantId: Long,
-        val imageUrl: String,
-        val progressionStage: Int
-    )
+
 
     @Query("SELECT * FROM pictures WHERE plantId = :plantId")
     fun getPicturesForPlant(plantId: Long): Flow<List<Picture>>
@@ -32,6 +27,6 @@ interface PictureDao {
     @Delete
     suspend fun deletePicture(picture: Picture)
 
-    @Query("SELECT pictureId, plantId, imageUrl, progressionStage FROM pictures GROUP BY plantId HAVING progressionStage = MAX(progressionStage)")
-    fun getAllLastImages(): Flow<List<PicturePlant>>
+    @Query("SELECT * FROM pictures GROUP BY plantId HAVING progressionStage = MAX(progressionStage)")
+    fun getAllLastImages(): Flow<List<Picture>>
 }
