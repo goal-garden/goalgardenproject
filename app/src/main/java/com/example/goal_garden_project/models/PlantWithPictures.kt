@@ -36,7 +36,6 @@ fun getPlants(): List<PlantWithPictures> {
         ),
 
 
-
     )
 
 
