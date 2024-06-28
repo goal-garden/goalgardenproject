@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.PictureRepository
+import com.example.goal_garden_project.data.repositories.PlantRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.viewmodels.AddViewModel
@@ -52,13 +53,14 @@ fun AddScreen(navController: NavController) {
 
 
     val repository = GoalRepository(goalDao = db.goalDao())
-    val repository2= PictureRepository(pictureDao = db.pictureDao())
+    val repository2= PlantRepository(plantDao = db.plantDao())
     val factory = AddViewModelFactory(repository = repository, repository2=repository2)  //does Goal viewmodel suffy
     val viewModel: AddViewModel = viewModel(factory = factory)
 
 
     var goalId by remember { mutableStateOf("") }
     var plantId by remember { mutableStateOf("") }
+    var plantName by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var tasks by remember { mutableStateOf("") }
@@ -91,15 +93,15 @@ fun AddScreen(navController: NavController) {
                     onExpandedChange = { expanded = !expanded }
                 ) {
                     TextField(
-                        value = plantId,
-                        onValueChange = { plantId = it },
+                        value = plantName,
+                        onValueChange = { plantName = it },
                         modifier = Modifier
                             .menuAnchor()
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
                             .clickable { expanded = true },
                         readOnly = true,
-                        label = { Text("Plant ID") },
+                        label = { Text("Plant") },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = expanded
@@ -123,15 +125,16 @@ fun AddScreen(navController: NavController) {
                                 leadingIcon = {
                                     Image(
                                         painter = painterResource(id = context.resources.getIdentifier(
-                                            plant.imageUrl, "drawable", context.packageName
+                                            plant.pictures.last().imageUrl, "drawable", context.packageName
                                         )),
                                         contentDescription = "",
                                         modifier = Modifier.size(90.dp)
                                     )
                                 },
-                                text = { Text(text = plant.plantId.toString()) },
+                                text = { Text(text = plant.plant.name) },
                                 onClick = {
-                                    plantId = plant.plantId.toString()
+                                    plantId = plant.plant.plantId.toString()
+                                    plantName = plant.plant.name
                                     expanded = false
                                 }
                             )

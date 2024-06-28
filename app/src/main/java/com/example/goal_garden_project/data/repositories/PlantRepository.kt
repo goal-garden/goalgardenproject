@@ -18,5 +18,8 @@ class PlantRepository(private val plantDao: PlantDao) {
 
     fun getPlantById(plantId: Long): Flow<Plant?> = plantDao.getPlantById(plantId)
 
+    fun getAllPlantsWithPictures(): Flow<List<PlantWithPictures>> = plantDao.getAllPlantsWithPictures()
     fun getPlantWithPictures(plantId: Long): Flow<PlantWithPictures?> = plantDao.getPlantWithPicturesById(plantId)
+    fun getAllLastImages(): Flow<List<PlantWithPictures>> =plantDao.getAllLastImages()
+
 }

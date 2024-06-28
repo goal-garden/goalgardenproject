@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.PictureRepository
+import com.example.goal_garden_project.data.repositories.PlantRepository
 
-class AddViewModelFactory(private val repository: GoalRepository, private val repository2: PictureRepository
+class AddViewModelFactory(private val repository: GoalRepository, private val repository2: PlantRepository
  ): ViewModelProvider.Factory {
     override fun<T: ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(AddViewModel::class.java)){
