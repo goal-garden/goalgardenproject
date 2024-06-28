@@ -1,6 +1,7 @@
 package com.example.goal_garden_project.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -22,7 +24,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,6 +35,7 @@ import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.PictureRepository
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
@@ -115,6 +120,15 @@ fun AddScreen(navController: NavController) {
 
                         possiblePlants?.forEach { plant ->
                             DropdownMenuItem(
+                                leadingIcon = {
+                                    Image(
+                                        painter = painterResource(id = context.resources.getIdentifier(
+                                            plant.imageUrl, "drawable", context.packageName
+                                        )),
+                                        contentDescription = "",
+                                        modifier = Modifier.size(90.dp)
+                                    )
+                                },
                                 text = { Text(text = plant.plantId.toString()) },
                                 onClick = {
                                     plantId = plant.plantId.toString()
