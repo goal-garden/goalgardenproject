@@ -8,7 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.goal_garden_project.screens.AddScreen
 import com.example.goal_garden_project.screens.DetailScreen
-import com.example.goal_garden_project.screens.GoalScreen
+import com.example.goal_garden_project.screens.AddTaskScreen
 import com.example.goal_garden_project.screens.HomeScreen
 import com.example.goal_garden_project.screens.ListScreen
 import com.example.goal_garden_project.screens.PlantScreen
@@ -26,7 +26,7 @@ fun Navigation() {
             HomeScreen(navController = navController)//, //moviesViewModel=moviesViewModel)
         }
         composable(route = Screen.Goal.route){
-            GoalScreen(navController = navController)//, moviesViewModel)
+            AddTaskScreen(navController = navController)//, moviesViewModel)
         }
         composable(route = Screen.Add.route){   // route with name "homescreen" navigates to HomeScreen composable
             AddScreen(navController = navController)//, //moviesViewModel=moviesViewModel)

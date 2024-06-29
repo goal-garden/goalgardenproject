@@ -39,24 +39,26 @@ import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
+import com.example.goal_garden_project.viewmodels.GoalViewModel
+import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.widgets.PlantDropdownMenu
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import kotlinx.coroutines.launch
 import java.util.Date
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(navController: NavController) {
+fun AddTaskScreen(navController: NavController) {
+
     val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val goalRepository = GoalRepository(goalDao = db.goalDao())
+    val factory = GoalViewModelFactory(repository = goalRepository)
+    val viewModel: GoalViewModel = viewModel(factory = factory)
+    val coroutineScope = rememberCoroutineScope()
 
-    val db = AppDatabase.getDatabase(LocalContext.current)
-
-
-    val repository = GoalRepository(goalDao = db.goalDao())
-    val repository2= PlantRepository(plantDao = db.plantDao())
-    val factory = AddViewModelFactory(repository = repository, repository2=repository2)  //does Goal viewmodel suffy
-    val viewModel: AddViewModel = viewModel(factory = factory)
-
+    val goalsWithPlantPicture by viewModel.goalsWithImageAndTitle.collectAsState()
 
     var goalId by remember { mutableStateOf("") }
     var plantId by remember { mutableStateOf("") }
@@ -65,9 +67,6 @@ fun AddScreen(navController: NavController) {
     var description by remember { mutableStateOf("") }
     var tasks by remember { mutableStateOf("") }
 
-    val coroutineScope = rememberCoroutineScope()
-
-    val possiblePlants by viewModel.pictures.collectAsState()
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -87,16 +86,16 @@ fun AddScreen(navController: NavController) {
                     .padding(16.dp)
             ) {
 
-
                 PlantDropdownMenu(
                     context = context,
-                    goalsWithPlantPicture = possiblePlants,
+                    goalsWithPlantPicture = goalsWithPlantPicture,
                     plantName = plantName,
                     onPlantSelected = { id, name ->
                         plantId = id
                         plantName = name
                     }
                 )
+
 
                 BasicTextField(
                     value = title,
@@ -155,7 +154,7 @@ fun AddScreen(navController: NavController) {
                             isFulfilled = false
                         )
                         coroutineScope.launch {
-                            viewModel.addGoal(goal)
+                            //viewModel.addGoal(goal)
 
                             Toast.makeText(context, "Goal added", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()

@@ -53,11 +53,6 @@ fun HomeScreen(navController: NavController) {
     val viewModel: GoalViewModel = viewModel(factory = factory)
     val coroutineScope = rememberCoroutineScope()
 
-    // Collecting the images from the repository should be done by the view model
-//    val imageListFlow =
-//        goalRepository.getAllGoalImages() // Assuming this returns Flow<List<Picture>>
-//    val imageList by imageListFlow.collectAsState(initial = emptyList())
-
     val goalsWithPlantPicture by viewModel.goalsWithPlantPicture.collectAsState()
 
 

@@ -2,6 +2,7 @@ package com.example.goal_garden_project.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.goal_garden_project.data.daos.GoalDao
 import com.example.goal_garden_project.data.daos.PictureDao
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.PictureRepository
@@ -18,15 +19,15 @@ import kotlinx.coroutines.launch
 class AddViewModel (private val repository: GoalRepository, private val repository2: PlantRepository
 ) : ViewModel() {
 
-    private val _pictures = MutableStateFlow<List<PlantWithPictures>?>(null)
-    val pictures: StateFlow<List<PlantWithPictures>?> = _pictures.asStateFlow()
+    private val _pictures = MutableStateFlow<List<GoalDao.IdImageTitle>?>(null)
+    val pictures: StateFlow<List<GoalDao.IdImageTitle>?> = _pictures.asStateFlow()
 
 
     //hier muss ich dann nur die liste von verfügbaren plants laden
 
     init {
         viewModelScope.launch {
-            repository2.getAllPlantsWithPictures()
+            repository2.getAllLastImages()
                 .collect { pictures ->
                     _pictures.value = pictures
                     println("hey")

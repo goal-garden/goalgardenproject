@@ -103,13 +103,7 @@ fun PlantScreen(goalId: Long, navController: NavController) {//, moviesViewModel
                 .padding(innerPadding)
         ) {
 
-/* später das nehmen für dynamic image::
-            Image(
-                painter = painterResource(id = context.resources.getIdentifier(
-                    imageUrlState, "drawable", context.packageName
-            )),
 
- */
             Column(modifier = Modifier.fillMaxSize()) {
 
                 Image(
