@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.goal_garden_project.models.Picture
 import com.example.goal_garden_project.models.Plant
 import com.example.goal_garden_project.models.PlantWithPictures
 import kotlinx.coroutines.flow.Flow
@@ -24,8 +25,9 @@ interface PlantDao {
     @Query("SELECT * FROM plants WHERE plantId = :plantId")
     fun getPlantWithPicturesById(plantId: Long): Flow<PlantWithPictures>
 
+
     @Transaction
-    @Query("SELECT * FROM plants")
+    @Query("SELECT  * FROM plants")      //you dont need to join there because it automaticly fills in the pictures
     fun getAllPlantsWithPictures(): Flow<List<PlantWithPictures>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -36,4 +38,8 @@ interface PlantDao {
 
     @Delete
     suspend fun deletePlant(plant: Plant)
+
+    @Query("SELECT p.plantId as id, p.name as title, pic.ImageUrl as image FROM pictures pic INNER JOIN plants p ON pic.plantId = p.plantId GROUP BY pic.plantId HAVING progressionStage = MAX(progressionStage)"
+    ) fun getAllLastImages(): Flow<List<GoalDao.IdImageTitle>>
+
 }

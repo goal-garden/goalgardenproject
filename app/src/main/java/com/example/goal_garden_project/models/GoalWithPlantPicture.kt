@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 class GoalWithPlantPicture(
+    val title: String,
     val pictureId: Int,
     val plantId: Int,
     val progressionStage: Int,
