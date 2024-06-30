@@ -55,7 +55,6 @@ fun HomeScreen(navController: NavController) {
 
     val goalsWithPlantPicture by viewModel.goalsWithPlantPicture.collectAsState()
 
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
