@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.viewmodels.GoalViewModel
 import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
@@ -57,7 +58,7 @@ fun ListScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize(),
         bottomBar = {
-            SimpleBottomBar(navController)
+            SimpleBottomBar(navController, Screen.Add.route)
         },
     ) { innerPadding ->
         Column(

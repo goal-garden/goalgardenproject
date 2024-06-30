@@ -9,7 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.widgets.SimpleBottomBar
 
 
@@ -25,7 +27,7 @@ fun TaskScreen(navController: NavController){//, moviesViewModel: HomeViewModel)
         modifier= Modifier
             .fillMaxSize(),
         bottomBar = {
-            SimpleBottomBar(navController)
+            SimpleBottomBar(navController, Screen.AddTask.route, Color.Magenta)
         },
     ){
             innerPadding ->

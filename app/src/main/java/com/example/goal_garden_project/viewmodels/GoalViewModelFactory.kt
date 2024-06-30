@@ -8,7 +8,7 @@ class GoalViewModelFactory(private val repository: GoalRepository
  ): ViewModelProvider.Factory {
     override fun<T: ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(GoalViewModel::class.java)){
-            return GoalViewModel(repository) as T
+            return GoalViewModel(repository=repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

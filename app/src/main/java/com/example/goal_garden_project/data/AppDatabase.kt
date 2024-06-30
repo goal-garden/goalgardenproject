@@ -16,6 +16,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.goal_garden_project.data.daos.PictureDao
 import com.example.goal_garden_project.data.daos.PlantDao
+import com.example.goal_garden_project.data.daos.TaskDao
 
 
 @Database(
@@ -30,6 +31,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun plantDao(): PlantDao
     abstract fun pictureDao(): PictureDao
     // add more daos here if you have multiple tables
+    abstract fun taskDao(): TaskDao
 
     // declare as singleton - companion objects are like static variables in Java
     companion object {

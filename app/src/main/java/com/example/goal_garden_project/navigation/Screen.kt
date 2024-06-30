@@ -15,7 +15,7 @@ sealed class Screen (val route: String, val title: String, val icon: ImageVector
     data object Home : Screen("homescreen", "Home", Icons.Default.Home)
     data object Plant : Screen("plantscreen/{goalId}", "Plant", Icons.Default.Favorite)
     data object Detail : Screen("detailscreen/{goalId}", "Detail", Icons.Default.Menu)   //Icons.Default.Info
-    data object Goal : Screen("goalscreen", "Goal", Icons.Default.Star)
+    data object AddTask : Screen("addtaskscreen", "Add Task", Icons.Default.Add)
     data object List : Screen("listscreen", "List", Icons.Default.List)
     data object Add : Screen("addscreen", "Add", Icons.Default.Add)
     data object Task : Screen("taskscreen", "Task", Icons.Default.Done)

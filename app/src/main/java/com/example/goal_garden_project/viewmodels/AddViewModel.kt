@@ -38,7 +38,7 @@ class AddViewModel (private val repository: GoalRepository, private val reposito
     fun addGoal(goal: Goal) {
         viewModelScope.launch {
             repository.addGoal(goal)
-            repository
+
         }
     }
 

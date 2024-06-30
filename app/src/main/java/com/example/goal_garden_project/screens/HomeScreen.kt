@@ -59,7 +59,7 @@ fun HomeScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            SimpleBottomBar(navController)
+            SimpleBottomBar(navController, Screen.Add.route)
         }
     ) { innerPadding ->
         Box(
