@@ -187,18 +187,7 @@ fun PlantScreen(goalId: Long, navController: NavController) {//, moviesViewModel
 
                     // Dialog
                     if (showDialog) {
-                        Dialog(
-                            onDismissRequest = { showDialog = false }
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .background(color = Color.White)
-                                    .size(300.dp)
-                            ) {
-                                Text(text = "This is a popup for watering the plant!")
-                            }
-                        }
+                        WateringPopup(onDismissRequest = { showDialog = false }, goalId)
                     }
                 }
             }

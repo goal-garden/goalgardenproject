@@ -25,6 +25,7 @@ import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.viewmodels.TaskViewModel
 import com.example.goal_garden_project.viewmodels.TaskViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
+import com.example.goal_garden_project.widgets.TaskList
 
 @Composable
 fun TaskScreen(navController: NavController) {
@@ -94,57 +95,4 @@ fun FilterButtons(currentFilter: String, onFilterSelected: (String) -> Unit) {
     }
 }
 
-@Composable
-fun TaskList(tasks: List<Task>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(tasks) { task ->
-            TaskItem(task)
-        }
-    }
-}
 
-@Composable
-fun TaskItem(task: Task) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(text = task.name, style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = task.description, style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Date: ${task.date}", style = MaterialTheme.typography.bodyMedium)
-            }
-            if (task.isFulfilled) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Fulfilled",
-                    tint = Color.DarkGray
-                )
-            }
-            /*
-            Icon(
-                imageVector = if (task.isFulfilled) Icons.Default.Check else Icons.Default.Build,
-                contentDescription = if (task.isFulfilled) "Fulfilled" else "Unfulfilled",
-                tint = if (task.isFulfilled) Color.DarkGray else Color.DarkGray
-            )
-
-             */
-        }
-    }
-}
