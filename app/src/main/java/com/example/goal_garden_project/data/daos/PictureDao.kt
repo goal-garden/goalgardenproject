@@ -29,4 +29,7 @@ interface PictureDao {
 
     @Query("SELECT * FROM pictures GROUP BY plantId HAVING progressionStage = MAX(progressionStage)")
     fun getAllLastImages(): Flow<List<Picture>>
+
+    @Query("SELECT max(progressionStage) FROM pictures GROUP BY plantId HAVING plantId = :plantId"
+    ) fun getMaxProgressionNumber(plantId: Long): Flow<Int>
 }

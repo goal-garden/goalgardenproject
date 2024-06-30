@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
+import com.example.goal_garden_project.data.repositories.PictureRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.Task
 import com.example.goal_garden_project.navigation.Screen
@@ -35,7 +36,8 @@ fun TaskScreen(navController: NavController) {
     val db = AppDatabase.getDatabase(context)
     val taskRepository = TaskRepository(taskDao = db.taskDao())
     val goalRepository = GoalRepository(goalDao = db.goalDao())
-    val factory = TaskViewModelFactory(repository = taskRepository, repository2 = goalRepository)
+    val pictureRepository = PictureRepository(pictureDao = db.pictureDao())
+    val factory = TaskViewModelFactory(repository = taskRepository, repository2 = goalRepository, repository3 = pictureRepository)
     val viewModel: TaskViewModel = viewModel(factory = factory)
 
     val tasks by viewModel.tasks.collectAsState()

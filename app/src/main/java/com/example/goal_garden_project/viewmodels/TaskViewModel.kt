@@ -4,6 +4,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goal_garden_project.data.repositories.GoalRepository
+import com.example.goal_garden_project.data.repositories.PictureRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.models.GoalWithPlantPicture
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.firstOrNull
 
 import kotlinx.coroutines.launch
 //use for task screen
-class TaskViewModel (private val repository: TaskRepository, private val repository2: GoalRepository
+class TaskViewModel (private val repository: TaskRepository, private val repository2: GoalRepository,private val repository3: PictureRepository
 ) : ViewModel() {
 
     private val _tasks = MutableStateFlow(listOf<Task>())
@@ -70,13 +71,14 @@ class TaskViewModel (private val repository: TaskRepository, private val reposit
     fun waterPlant(goalId: Long) {
         viewModelScope.launch {
             repository2.getGoalById(goalId).firstOrNull()?.let { goal ->
-                if (goal != null) {
-                    println("kevinhabdich lieb")
-                    println(goal)
-                    println(goal.progressionStage)
-
-                    val updatedGoal = goal.copy(progressionStage = 1 + goal.progressionStage)
-                    repository2.updateGoal(updatedGoal)
+                repository3.getMaxProgressionNumber(goal.plantId).firstOrNull()?.let { maxProgressionNumber ->
+                    if (goal.progressionStage < maxProgressionNumber) {
+                        val updatedGoal = goal.copy(progressionStage = goal.progressionStage + 1)
+                        repository2.updateGoal(updatedGoal)
+                    }
+                    else{
+                        println("max progression reached")
+                    }
                 }
             }
             }
