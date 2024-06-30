@@ -78,7 +78,8 @@ fun FilterButtons(currentFilter: String, onFilterSelected: (String) -> Unit) {
         Button(
             onClick = { onFilterSelected("Unfulfilled") },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (currentFilter == "Unfulfilled") Color.Gray else Color.LightGray
+                containerColor = if (currentFilter == "Unfulfilled")  MaterialTheme.colorScheme.primaryContainer else Color.LightGray,
+                contentColor = Color.DarkGray
             )
         ) {
             Text(text = "Unfulfilled")
@@ -86,7 +87,8 @@ fun FilterButtons(currentFilter: String, onFilterSelected: (String) -> Unit) {
         Button(
             onClick = { onFilterSelected("Fulfilled") },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (currentFilter == "Fulfilled") Color.Gray else Color.LightGray
+                containerColor = if (currentFilter == "Fulfilled") MaterialTheme.colorScheme.primaryContainer else Color.LightGray,
+                contentColor = Color.DarkGray
             )
         ) {
             Text(text = "Fulfilled")

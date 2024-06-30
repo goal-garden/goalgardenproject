@@ -19,11 +19,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,6 +38,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
@@ -43,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.style.TextAlign
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,6 +56,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.viewmodels.TaskViewModel
@@ -91,8 +98,44 @@ fun WateringPopup(onDismissRequest: () -> Unit, goalId:Long) {
             )
         {
             Column(Modifier.padding(15.dp)) {
+                var selectedTasks by remember { mutableStateOf(mutableListOf<Long>()) }
                 Text(text = "select fulfilled task:", style = MaterialTheme.typography.headlineMedium)
-                TaskList(tasks) //on click change color
+                Box(Modifier.height(400.dp)){TaskList(tasks, selectedTasks=selectedTasks, onTaskSelectionChange = { taskId, isSelected ->
+                    selectedTasks = if (isSelected) {
+                        selectedTasks.toMutableList().apply { add(taskId) }
+                    } else {
+                        selectedTasks.toMutableList().apply { remove(taskId) }
+                    }
+                })}
+                Box(
+                    contentAlignment =
+                    Alignment.BottomEnd, modifier = Modifier.fillMaxSize(
+                    )
+                ){
+
+                Button(
+                    onClick = {
+                        selectedTasks.forEach { task ->
+                            viewModel.markTaskAsFulfilled(task)
+                      }
+                    },
+
+                    colors = ButtonDefaults.buttonColors(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        Color.DarkGray
+                    ),          //first color = background, second color = icon color
+                    shape = RoundedCornerShape(10)
+                ) {
+                    Text(
+                        text = "done",
+                        textAlign = TextAlign.Center, // Center aligns the text horizontally
+                        fontSize = 20.sp, // Increase font size
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically) // Center aligns vertically
+                    )
+
+                }
+                }
             }
 
         }

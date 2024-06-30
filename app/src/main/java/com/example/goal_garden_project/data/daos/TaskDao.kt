@@ -32,6 +32,8 @@ interface TaskDao {
     fun getAllTasks(): Flow<List<Task>>
 
 
+
+
     @Query("SELECT * FROM tasks WHERE goalId=:goalId and isFulfilled=false")
     fun getUnfinishedTasks(goalId:Long): Flow<List<Task>>
 }
