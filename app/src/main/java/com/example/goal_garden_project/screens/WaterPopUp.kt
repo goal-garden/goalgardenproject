@@ -123,9 +123,10 @@ fun WateringPopup(onDismissRequest: () -> Unit, goalId:Long) {
                         isButtonEnabled = false
                         selectedTasks.forEach { task ->
                             viewModel.markTaskAsFulfilled(task)
+                            viewModel.waterPlant(goalId) // watering
                         }
                         onDismissRequest() // close popup
-                        viewModel.waterPlant(goalId) // watering
+
                         isButtonEnabled = true
                     }
                     },
