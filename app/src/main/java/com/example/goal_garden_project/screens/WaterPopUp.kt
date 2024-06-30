@@ -58,6 +58,7 @@ import androidx.compose.ui.window.DialogWindowProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.goal_garden_project.data.AppDatabase
+import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.viewmodels.TaskViewModel
 import com.example.goal_garden_project.viewmodels.TaskViewModelFactory
@@ -71,7 +72,9 @@ fun WateringPopup(onDismissRequest: () -> Unit, goalId:Long) {
     val context = LocalContext.current
     val db = AppDatabase.getDatabase(context)
     val taskRepository = TaskRepository(taskDao = db.taskDao())
-    val factory = TaskViewModelFactory(repository = taskRepository)
+    val goalRepository = GoalRepository(goalDao = db.goalDao())
+
+    val factory = TaskViewModelFactory(repository = taskRepository, repository2 = goalRepository)
     val viewModel: TaskViewModel = viewModel(factory = factory)
 
     LaunchedEffect(key1 = goalId) {
@@ -112,12 +115,18 @@ fun WateringPopup(onDismissRequest: () -> Unit, goalId:Long) {
                     Alignment.BottomEnd, modifier = Modifier.fillMaxSize(
                     )
                 ){
-
+                    var isButtonEnabled by remember { mutableStateOf(true) }
                 Button(
                     onClick = {
+                    if (isButtonEnabled) {
+                        isButtonEnabled = false
                         selectedTasks.forEach { task ->
                             viewModel.markTaskAsFulfilled(task)
-                      }
+                        }
+                        onDismissRequest() // close popup
+                        viewModel.waterPlant(goalId) // watering
+                        isButtonEnabled = true
+                    }
                     },
 
                     colors = ButtonDefaults.buttonColors(

@@ -34,7 +34,8 @@ fun TaskScreen(navController: NavController) {
     val context = LocalContext.current
     val db = AppDatabase.getDatabase(context)
     val taskRepository = TaskRepository(taskDao = db.taskDao())
-    val factory = TaskViewModelFactory(repository = taskRepository)
+    val goalRepository = GoalRepository(goalDao = db.goalDao())
+    val factory = TaskViewModelFactory(repository = taskRepository, repository2 = goalRepository)
     val viewModel: TaskViewModel = viewModel(factory = factory)
 
     val tasks by viewModel.tasks.collectAsState()
