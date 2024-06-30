@@ -28,8 +28,6 @@ class GoalViewModel(
     val goalsWithPlantPicture: StateFlow<List<GoalWithPlantPicture>> =
         _goalsWithPlantPicture.asStateFlow()
 
-    private val _goalsWithImageAndTitle = MutableStateFlow<List<GoalDao.IdImageTitle>?>(null)
-    val goalsWithImageAndTitle: StateFlow<List<GoalDao.IdImageTitle>?> = _goalsWithImageAndTitle.asStateFlow()
 
     //contain grouping after finished/not finished/not seeded
     private val _unfinishedGoals = MutableStateFlow((listOf<Goal>()))
@@ -66,14 +64,6 @@ class GoalViewModel(
                 _finishedGoals.value = goals
                 Log.d("GoalViewModel", "Finished goals: $goals")
             }
-        }
-        viewModelScope.launch {
-            repository.getAllGoalsWithImageAndTitle().distinctUntilChanged().collect{
-                goals ->
-                    _goalsWithImageAndTitle.value = goals
-
-            }
-
         }
 //        viewModelScope.launch {
 //            repository.getUnseededGoals().distinctUntilChanged()

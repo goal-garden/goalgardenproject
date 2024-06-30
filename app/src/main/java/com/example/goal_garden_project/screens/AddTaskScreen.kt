@@ -39,6 +39,8 @@ import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.models.Task
 import com.example.goal_garden_project.navigation.Screen
+import com.example.goal_garden_project.viewmodels.AddTaskViewModel
+import com.example.goal_garden_project.viewmodels.AddTaskViewModelFactory
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
 import com.example.goal_garden_project.viewmodels.GoalViewModel
@@ -57,11 +59,9 @@ fun AddTaskScreen(navController: NavController) {
     val context = LocalContext.current
     val db = AppDatabase.getDatabase(context)
     val goalRepository = GoalRepository(goalDao = db.goalDao())
-    val factory = GoalViewModelFactory(repository = goalRepository)
-    val viewModel: GoalViewModel = viewModel(factory = factory)
     val taskRepository = TaskRepository(taskDao = db.taskDao())
-    val factory2 = TaskViewModelFactory(repository = taskRepository)
-    val viewModel2: TaskViewModel = viewModel(factory = factory2)
+    val factory = AddTaskViewModelFactory(repository = goalRepository, repository2 = taskRepository)
+    val viewModel: AddTaskViewModel = viewModel(factory = factory)
     val coroutineScope = rememberCoroutineScope()
 
     val goalsWithPlantPicture by viewModel.goalsWithImageAndTitle.collectAsState()
@@ -153,7 +153,7 @@ fun AddTaskScreen(navController: NavController) {
                             isFulfilled = false
                         )
                         coroutineScope.launch {
-                            viewModel2.addTask(task)
+                            viewModel.addTask(task)
 
                             Toast.makeText(context, "Task added", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
