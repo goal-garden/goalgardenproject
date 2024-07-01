@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -100,7 +101,8 @@ fun PlantScreen(goalId: Long, navController: NavController) {//, moviesViewModel
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
+            contentAlignment = Alignment.BottomCenter
         ) {
 
 
@@ -111,6 +113,8 @@ fun PlantScreen(goalId: Long, navController: NavController) {//, moviesViewModel
                     contentDescription = "my-goal",
                     modifier = Modifier
                         .size(300.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
                         .padding(5.dp),
                     contentScale = ContentScale.Crop
                 )
@@ -183,29 +187,23 @@ fun PlantScreen(goalId: Long, navController: NavController) {//, moviesViewModel
                             //Icon(imageVector = Icons.Default.Send, contentDescription = "Open Popup", modifier = Modifier.size(36.dp))
                         }
                     }
-
-
-                    // Dialog
-                    if (showDialog) {
-                        Dialog(
-                            onDismissRequest = { showDialog = false }
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .background(color = Color.White)
-                                    .size(300.dp)
-                            ) {
-                                Text(text = "This is a popup for watering the plant!")
-                            }
-                        }
-                    }
                 }
+
+
             }
+
+                // Dialog
+                if (showDialog) {
+                    WateringPopup(onDismissRequest = { showDialog = false }, goalId)
+
+                }
+
 
 
         }
+
     }
+
 
 }
 

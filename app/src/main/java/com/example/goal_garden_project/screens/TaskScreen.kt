@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
+import com.example.goal_garden_project.data.repositories.PictureRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.Task
 import com.example.goal_garden_project.navigation.Screen
@@ -25,6 +26,7 @@ import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.viewmodels.TaskViewModel
 import com.example.goal_garden_project.viewmodels.TaskViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
+import com.example.goal_garden_project.widgets.TaskList
 
 @Composable
 fun TaskScreen(navController: NavController) {
@@ -33,7 +35,9 @@ fun TaskScreen(navController: NavController) {
     val context = LocalContext.current
     val db = AppDatabase.getDatabase(context)
     val taskRepository = TaskRepository(taskDao = db.taskDao())
-    val factory = TaskViewModelFactory(repository = taskRepository)
+    val goalRepository = GoalRepository(goalDao = db.goalDao())
+    val pictureRepository = PictureRepository(pictureDao = db.pictureDao())
+    val factory = TaskViewModelFactory(repository = taskRepository, repository2 = goalRepository, repository3 = pictureRepository)
     val viewModel: TaskViewModel = viewModel(factory = factory)
 
     val tasks by viewModel.tasks.collectAsState()
@@ -77,7 +81,8 @@ fun FilterButtons(currentFilter: String, onFilterSelected: (String) -> Unit) {
         Button(
             onClick = { onFilterSelected("Unfulfilled") },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (currentFilter == "Unfulfilled") Color.Gray else Color.LightGray
+                containerColor = if (currentFilter == "Unfulfilled")  MaterialTheme.colorScheme.primaryContainer else Color.LightGray,
+                contentColor = Color.DarkGray
             )
         ) {
             Text(text = "Unfulfilled")
@@ -85,7 +90,8 @@ fun FilterButtons(currentFilter: String, onFilterSelected: (String) -> Unit) {
         Button(
             onClick = { onFilterSelected("Fulfilled") },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (currentFilter == "Fulfilled") Color.Gray else Color.LightGray
+                containerColor = if (currentFilter == "Fulfilled") MaterialTheme.colorScheme.primaryContainer else Color.LightGray,
+                contentColor = Color.DarkGray
             )
         ) {
             Text(text = "Fulfilled")
@@ -94,57 +100,4 @@ fun FilterButtons(currentFilter: String, onFilterSelected: (String) -> Unit) {
     }
 }
 
-@Composable
-fun TaskList(tasks: List<Task>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(tasks) { task ->
-            TaskItem(task)
-        }
-    }
-}
 
-@Composable
-fun TaskItem(task: Task) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(text = task.name, style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = task.description, style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Date: ${task.date}", style = MaterialTheme.typography.bodyMedium)
-            }
-            if (task.isFulfilled) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Fulfilled",
-                    tint = Color.DarkGray
-                )
-            }
-            /*
-            Icon(
-                imageVector = if (task.isFulfilled) Icons.Default.Check else Icons.Default.Build,
-                contentDescription = if (task.isFulfilled) "Fulfilled" else "Unfulfilled",
-                tint = if (task.isFulfilled) Color.DarkGray else Color.DarkGray
-            )
-
-             */
-        }
-    }
-}

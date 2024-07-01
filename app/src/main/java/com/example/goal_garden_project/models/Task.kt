@@ -28,5 +28,6 @@ data class Task(
     var name: String,
     var description: String,
     var date: Int,
-    var isFulfilled: Boolean
+    var isFulfilled: Boolean,
+    //var value: Long =1      //to know how much it contributes to a goal, to also determine when the plant should grow
 )

@@ -17,4 +17,5 @@ class PictureRepository(private val pictureDao: PictureDao) {
 
     fun getAllLastImages(): Flow<List<Picture>> = pictureDao.getAllLastImages()
 
+    fun getMaxProgressionNumber(plantId: Long): Flow<Int> = pictureDao.getMaxProgressionNumber(plantId)
 }

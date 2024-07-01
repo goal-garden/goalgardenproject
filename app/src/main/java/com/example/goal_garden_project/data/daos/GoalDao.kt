@@ -43,7 +43,7 @@ interface GoalDao {
     fun getGoalWithTasksById(goalId: Long): Flow<GoalWithTasks>
 
     @Transaction
-    @Query("SELECT * FROM goals WHERE goalId = :goalId")
+    @Query("SELECT * FROM goals WHERE goalId = :goalId Limit 1")
     fun getGoalById(goalId: Long): Flow<Goal>
 
     @Transaction

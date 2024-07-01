@@ -42,4 +42,7 @@ interface PlantDao {
     @Query("SELECT p.plantId as id, p.name as title, pic.ImageUrl as image FROM pictures pic INNER JOIN plants p ON pic.plantId = p.plantId GROUP BY pic.plantId HAVING progressionStage = MAX(progressionStage)"
     ) fun getAllLastImages(): Flow<List<GoalDao.IdImageTitle>>
 
+
+
+
 }
