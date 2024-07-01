@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "goals",
-    foreignKeys = [
+    /*foreignKeys = [
         ForeignKey(
             entity = Plant::class,
             parentColumns = ["plantId"],
@@ -15,6 +15,8 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         )
     ],
+
+     */
     indices = [Index(value = ["goalId"]), Index(value = ["plantId"])]
 )
 data class Goal(

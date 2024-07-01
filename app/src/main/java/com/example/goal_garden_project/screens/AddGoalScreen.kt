@@ -3,6 +3,7 @@ package com.example.goal_garden_project.screens
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,23 +24,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.PictureRepository
 import com.example.goal_garden_project.data.repositories.PlantRepository
+import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.models.Task
+import com.example.goal_garden_project.viewmodels.AddTaskViewModel
+import com.example.goal_garden_project.viewmodels.AddTaskViewModelFactory
 
 import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
 import com.example.goal_garden_project.widgets.PlantDropdownMenu
 import com.example.goal_garden_project.widgets.SimpleTopBar
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -52,11 +65,17 @@ fun AddScreen(navController: NavController) {
     val factory = AddViewModelFactory(repository = repository, repository2=repository2)  //does Goal viewmodel suffy
     val viewModel: AddViewModel = viewModel(factory = factory)
 
+    val taskRepository = TaskRepository(taskDao = db.taskDao())
+    val factory2 = AddTaskViewModelFactory(repository = repository, repository2 = taskRepository)
+    val viewModel2: AddTaskViewModel = viewModel(factory = factory2)
+
     var plantId by remember { mutableStateOf("") }
     var plantName by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var tasks by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+    var prepreparetasks = remember { mutableStateListOf<Task>()}
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -136,18 +155,46 @@ fun AddScreen(navController: NavController) {
 
                 Button(
                     onClick = {
+                        showDialog = true
+                    },
+                                               //first color = background, second color = icon color
+                    shape = RoundedCornerShape(5)
+                ) {
+                    Text(
+                        text = "add task",
+                        textAlign = TextAlign.Center, // Center aligns the text horizontally
+                        fontSize = 20.sp, // Increase font size
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically) // Center aligns vertically
+                    )
+                    //Icon(imageVector = Icons.Default.Send, contentDescription = "Open Popup", modifier = Modifier.size(36.dp))
+                }
+
+                if (showDialog) {
+                    AddTaskPopUp(onDismissRequest = { showDialog = false }, prepreparetasks)
+
+                }
+
+                Button(
+                    onClick = {
                         val goal = Goal(
                             plantId = plantId.toLong(),
                             progressionStage = 0, // Default value for now
                             title = title,
                             description = description,
                             date = Date().time.toInt(), // Default value for now
-                            //tasks = tasks,        //later
+
                             isFulfilled = false
                         )
                         coroutineScope.launch {
-                            viewModel.addGoal(goal)
+                            //viewModel.addGoal(goal)
+                            /*
+                            prepreparetasks.forEach{task ->
+                                viewModel2.addTask(task.copy(goalId = newGoalId))
 
+                             */
+
+                            viewModel2.addGoalAndTasks(goal, prepreparetasks)
                             Toast.makeText(context, "Goal added", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         }

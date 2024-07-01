@@ -7,12 +7,15 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "tasks",
+    /*
     foreignKeys = [ForeignKey(
         entity = Goal::class,
         parentColumns = ["goalId"],
         childColumns = ["goalId"],
         onDelete = ForeignKey.CASCADE
     )],
+
+     */
     indices = [Index(value = ["goalId"]), Index(value = ["taskId"])]
 )
 data class Task(
@@ -24,10 +27,10 @@ data class Task(
     //goalID
     @PrimaryKey(autoGenerate = true)
     var taskId: Long = 0,
-    var goalId: Long,
+    var goalId: Long =0,
     var name: String,
-    var description: String,
+    var description: String ="",
     var date: Int,
-    var isFulfilled: Boolean,
+    var isFulfilled: Boolean =false,
     //var value: Long =1      //to know how much it contributes to a goal, to also determine when the plant should grow
 )

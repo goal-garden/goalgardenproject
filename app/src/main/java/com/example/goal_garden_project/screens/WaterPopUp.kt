@@ -104,7 +104,8 @@ fun WateringPopup(onDismissRequest: () -> Unit, goalId:Long) {
             Column(Modifier.padding(15.dp)) {
                 var selectedTasks by remember { mutableStateOf(mutableListOf<Long>()) }
                 Text(text = "select fulfilled task:", style = MaterialTheme.typography.headlineMedium)
-                Box(Modifier.height(400.dp)){TaskList(tasks, selectedTasks=selectedTasks, onTaskSelectionChange = { taskId, isSelected ->
+                Box(Modifier.height(400.dp)){
+                    TaskList(tasks, selectedTasks=selectedTasks, onTaskSelectionChange = { taskId, isSelected ->
                     selectedTasks = if (isSelected) {
                         selectedTasks.toMutableList().apply { add(taskId) }
                     } else {
