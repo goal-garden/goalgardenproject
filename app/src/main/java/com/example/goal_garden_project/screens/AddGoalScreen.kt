@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -49,6 +50,7 @@ import com.example.goal_garden_project.viewmodels.AddViewModel
 import com.example.goal_garden_project.viewmodels.AddViewModelFactory
 import com.example.goal_garden_project.widgets.PlantDropdownMenu
 import com.example.goal_garden_project.widgets.SimpleTopBar
+import com.example.goal_garden_project.widgets.TaskList
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -173,6 +175,9 @@ fun AddScreen(navController: NavController) {
                 if (showDialog) {
                     AddTaskPopUp(onDismissRequest = { showDialog = false }, prepreparetasks)
 
+                }
+                Box(Modifier.height(400.dp)){
+                    TaskList(prepreparetasks)
                 }
 
                 Button(
