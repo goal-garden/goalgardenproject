@@ -25,7 +25,7 @@ fun Navigation() {
         composable(route = Screen.Home.route){   // route with name "homescreen" navigates to HomeScreen composable
             HomeScreen(navController = navController)//, //moviesViewModel=moviesViewModel)
         }
-        composable(route = Screen.Goal.route){
+        composable(route = Screen.AddTask.route){
             AddTaskScreen(navController = navController)//, moviesViewModel)
         }
         composable(route = Screen.Add.route){   // route with name "homescreen" navigates to HomeScreen composable
