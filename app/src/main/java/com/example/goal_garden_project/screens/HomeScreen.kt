@@ -22,9 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-
-import androidx.compose.runtime.rememberCoroutineScope
-
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
@@ -51,20 +48,14 @@ fun HomeScreen(navController: NavController) {
     val goalRepository = GoalRepository(goalDao = db.goalDao())
     val factory = GoalViewModelFactory(repository = goalRepository)
     val viewModel: GoalViewModel = viewModel(factory = factory)
-    val coroutineScope = rememberCoroutineScope()
 
-    // Collecting the images from the repository should be done by the view model
-//    val imageListFlow =
-//        goalRepository.getAllGoalImages() // Assuming this returns Flow<List<Picture>>
-//    val imageList by imageListFlow.collectAsState(initial = emptyList())
 
     val goalsWithPlantPicture by viewModel.goalsWithPlantPicture.collectAsState()
-
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            SimpleBottomBar(navController)
+            SimpleBottomBar(navController, Screen.Add.route)
         }
     ) { innerPadding ->
         Box(

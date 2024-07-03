@@ -1,5 +1,6 @@
 package com.example.goal_garden_project.data.repositories
 
+import com.example.goal_garden_project.data.daos.GoalDao
 import com.example.goal_garden_project.data.daos.PlantDao
 import com.example.goal_garden_project.models.Plant
 import com.example.goal_garden_project.models.PlantWithPictures
@@ -18,5 +19,10 @@ class PlantRepository(private val plantDao: PlantDao) {
 
     fun getPlantById(plantId: Long): Flow<Plant?> = plantDao.getPlantById(plantId)
 
+    //fun getAllPlantsWithPictures(): Flow<List<PlantWithPictures>> = plantDao.getAllPlantsWithPictures()
+    fun getAllPlantsWithPictures(): Flow<List<PlantWithPictures>> = plantDao.getAllPlantsWithPictures()
+
     fun getPlantWithPictures(plantId: Long): Flow<PlantWithPictures?> = plantDao.getPlantWithPicturesById(plantId)
+    fun getAllLastImages(): Flow<List<GoalDao.IdImageTitle>> =plantDao.getAllLastImages()
+
 }

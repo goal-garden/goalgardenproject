@@ -14,4 +14,8 @@ class TaskRepository(private val taskDao: TaskDao) {
     fun getTasksForGoal(goalId: Long): Flow<List<Task>> = taskDao.getTasksForGoal(goalId)
 
     fun getTaskById(taskId: Long): Flow<Task?> = taskDao.getTaskById(taskId)
+
+    fun getAllTasks(): Flow<List<Task>> = taskDao.getAllTasks()
+
+    fun getUnfinishedTasks(goalId:Long): Flow<List<Task>> = taskDao.getUnfinishedTasks(goalId)
 }

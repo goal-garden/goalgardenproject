@@ -3,6 +3,7 @@ package com.example.goal_garden_project.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.goal_garden_project.data.daos.GoalDao
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.models.GoalWithPlantPicture
@@ -27,6 +28,7 @@ class GoalViewModel(
     val goalsWithPlantPicture: StateFlow<List<GoalWithPlantPicture>> =
         _goalsWithPlantPicture.asStateFlow()
 
+
     //contain grouping after finished/not finished/not seeded
     private val _unfinishedGoals = MutableStateFlow((listOf<Goal>()))
     val unfinishedGoals: StateFlow<List<Goal>> = _unfinishedGoals.asStateFlow()
@@ -38,6 +40,7 @@ class GoalViewModel(
     val waitingToBeSeededGoals: StateFlow<List<Goal>> = _waitingToBeSeededGoals.asStateFlow()
 
     init {
+
         viewModelScope.launch {
             repository.getAllGoals().distinctUntilChanged().collect { goals ->
                 _goals.value = goals

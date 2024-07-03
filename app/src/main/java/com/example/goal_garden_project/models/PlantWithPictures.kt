@@ -24,7 +24,18 @@ fun getPlants(): List<PlantWithPictures> {
                 Picture(4, 1, "sonnenb4", 3),
                 Picture(5, 1, "sonnenb5", 4),
             )
-        )
+        ),
+        PlantWithPictures(
+            plant = Plant(
+                2, "strawberry"
+            ), pictures = listOf(
+                Picture(6, 2, "erd1", 0),
+                Picture(7, 2, "erd2", 1),
+
+            )
+        ),
+
+
     )
 
 

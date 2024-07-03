@@ -18,6 +18,8 @@ data class Plant(
 //PlantID
 //front image
 
+//gewichtung für wachstum
+
 
 
 

@@ -5,7 +5,9 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
+import com.example.goal_garden_project.models.Plant
 import com.example.goal_garden_project.models.Task
 import kotlinx.coroutines.flow.Flow
 @Dao
@@ -24,4 +26,14 @@ interface TaskDao {
 
     @Delete
     suspend fun deleteTask(task: Task)
+
+    @Transaction
+    @Query("SELECT * FROM tasks")
+    fun getAllTasks(): Flow<List<Task>>
+
+
+
+
+    @Query("SELECT * FROM tasks WHERE goalId=:goalId and isFulfilled=false")
+    fun getUnfinishedTasks(goalId:Long): Flow<List<Task>>
 }

@@ -20,6 +20,12 @@ interface GoalDao {
         val imageUrl: String
     )
 
+    data class IdImageTitle(
+        val id: Long,
+        val title: String,
+        val image: String
+    )
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addGoal(goal: Goal) //insert
 
@@ -37,13 +43,13 @@ interface GoalDao {
     fun getGoalWithTasksById(goalId: Long): Flow<GoalWithTasks>
 
     @Transaction
-    @Query("SELECT * FROM goals WHERE goalId = :goalId")
+    @Query("SELECT * FROM goals WHERE goalId = :goalId Limit 1")
     fun getGoalById(goalId: Long): Flow<Goal>
 
     @Transaction
     @Query(
         """
-    SELECT p.pictureId, p.plantId, p.progressionStage, p.imageUrl, g.goalId
+    SELECT p.pictureId, p.plantId, p.progressionStage, p.imageUrl, g.goalId, g.title
         FROM goals g
         LEFT JOIN pictures p ON g.plantId = p.plantId AND g.progressionStage = p.progressionStage
         """
@@ -53,25 +59,13 @@ interface GoalDao {
     @Transaction
     @Query(
         """
-        SELECT p.pictureId, p.plantId, p.progressionStage, p.imageUrl, g.goalId
+        SELECT p.pictureId, p.plantId, p.progressionStage, p.imageUrl, g.goalId, g.title
         FROM goals g
         LEFT JOIN pictures p ON g.plantId = p.plantId AND g.progressionStage = p.progressionStage
         WHERE g.goalId = :id
         """
     )
     fun getGoalByIdWithPlantPicture(id: Long): Flow<GoalWithPlantPicture>
-
-
-    /*
-        @Query("""
-            SELECT p.imageUrl FROM pictures p
-            JOIN goals g ON p.plantId = g.plantId
-            WHERE g.dbId = :goalId AND p.progressionStage = g.imageProgressionNumber
-            ORDER BY p.progressionStage DESC LIMIT 1
-        """)
-        fun getCurrentPlantImageUrl(goalId: Long): Flow<String?>
-
-     */
 
     @Query(
         """
@@ -95,7 +89,6 @@ interface GoalDao {
     )
     fun getAllGoalImages(): Flow<List<GoalImageTuple>>
 
-
     @Transaction
     @Query("SELECT * FROM goals WHERE isFulfilled = 0")
     fun getUnfinishedGoals(): Flow<List<Goal>>
@@ -103,4 +96,17 @@ interface GoalDao {
     @Transaction
     @Query("SELECT * FROM goals WHERE isFulfilled = 1")
     fun getFinishedGoals(): Flow<List<Goal>>
+
+
+    @Query(
+        """
+        SELECT goalId as id, pictures.imageUrl as image, title
+    FROM goals
+    JOIN pictures ON goals.plantId = pictures.plantId
+    AND pictures.progressionStage = goals.progressionStage
+    """
+    )
+    fun getAllGoalsWithImageAndTitle(): Flow<List<IdImageTitle>>
+
+
 }

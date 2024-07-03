@@ -66,13 +66,13 @@ fun SimpleTopBar(text:String?, backButton:Boolean = false, navController:NavCont
 
 
 @Composable
-fun SimpleBottomBar(navController: NavController) {
+fun SimpleBottomBar(navController: NavController, screenRoute : String, floatingButtonColor: Color = MaterialTheme.colorScheme.primary) {
     val screens = listOf(
-        Screen.Task,
         Screen.List,
         Screen.Home,
-        Screen.Goal
-    )
+        Screen.Task,
+
+        )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
@@ -95,11 +95,11 @@ fun SimpleBottomBar(navController: NavController) {
         }
 
         FloatingActionButton(
-            onClick = {navController.navigate(Screen.Add.route)},  // keeps the current screen in the back stack
+            onClick = {navController.navigate(screenRoute)},  // keeps the current screen in the back stack
             modifier = Modifier
                 .offset(y = (-50).dp, x = (-30).dp) // Adjust this value to control how much the FAB overlaps the BottomAppBar
                 .align(Alignment.BottomEnd),
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = floatingButtonColor,
             contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             Icon(Icons.Default.Add, contentDescription = "Add")
