@@ -24,6 +24,7 @@ import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
+import com.example.goal_garden_project.widgets.TaskList
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -102,28 +103,8 @@ fun DetailScreen(goalId: Long, navController: NavController) {
                     Column(
                         modifier = Modifier.padding(start = 8.dp)
                     ) {
-                        goalWithTasks.tasks.forEach { task ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(12.dp)
-                                        .background(
-                                            color = MaterialTheme.colorScheme.primary,
-                                            shape = CircleShape
-                                        )
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = task.name,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onBackground
-                                )
-                            }
+                        Box(Modifier.height(500.dp)) {
+                            TaskList(goalWithTasks.tasks)
                         }
                     }
 
