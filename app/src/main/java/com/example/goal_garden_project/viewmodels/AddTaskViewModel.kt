@@ -42,6 +42,13 @@ class AddTaskViewModel (private val repository: GoalRepository, private val repo
             repository2.addTask(task)
         }
     }
+    fun addTasks(goalId:Long, tasks:List<Task>){
+        viewModelScope.launch {
+            tasks.forEach { task ->
+                repository2.addTask(task.copy(goalId = goalId))
+            }
+        }
+    }
 
     fun addGoalAndTasks(goal:Goal, tasks:List<Task>){
         viewModelScope.launch {

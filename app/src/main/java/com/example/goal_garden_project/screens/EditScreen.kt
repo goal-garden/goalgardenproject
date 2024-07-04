@@ -2,6 +2,7 @@ package com.example.goal_garden_project.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 
@@ -10,14 +11,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
+import com.example.goal_garden_project.data.repositories.TaskRepository
+import com.example.goal_garden_project.models.Task
+import com.example.goal_garden_project.viewmodels.AddTaskViewModel
+import com.example.goal_garden_project.viewmodels.AddTaskViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
+import com.example.goal_garden_project.widgets.TaskList
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -26,6 +34,10 @@ fun EditScreen(goalId: Long, navController: NavController) {
     val repository = GoalRepository(db.goalDao())
     val factory = DetailViewModelFactory(repository)
     val viewModel: DetailViewModel = viewModel(factory = factory)
+
+    val taskRepository = TaskRepository(taskDao = db.taskDao())
+    val factory2 = AddTaskViewModelFactory(repository = repository, repository2 = taskRepository)
+    val viewModel2: AddTaskViewModel = viewModel(factory = factory2)
 
     LaunchedEffect(key1 = goalId) {
         viewModel.getGoalById(goalId)
@@ -37,6 +49,9 @@ fun EditScreen(goalId: Long, navController: NavController) {
     var description by remember { mutableStateOf("") }
     var isFulfilled by remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(0) }
+    var tasks by remember { mutableStateOf(mutableStateListOf<Task>()) }
+    var showDialog by remember { mutableStateOf(false) }
+    var prepreparetasks = remember { mutableStateListOf<Task>()}
 
     LaunchedEffect(specificGoal) {
         specificGoal?.let {
@@ -44,6 +59,8 @@ fun EditScreen(goalId: Long, navController: NavController) {
             description = it.goal.description
             isFulfilled = it.goal.isFulfilled
             date = it.goal.date
+            tasks.clear() // Clear existing tasks
+            tasks.addAll(it.tasks)
         }
     }
 
@@ -95,9 +112,41 @@ fun EditScreen(goalId: Long, navController: NavController) {
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            showDialog = true
+                        },
+                        //first color = background, second color = icon color
+                        shape = RoundedCornerShape(5)
+                    ) {
+                        Text(
+                            text = "add task",
+                            textAlign = TextAlign.Center, // Center aligns the text horizontally
+                            fontSize = 20.sp, // Increase font size
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically) // Center aligns vertically
+                        )
+                        //Icon(imageVector = Icons.Default.Send, contentDescription = "Open Popup", modifier = Modifier.size(36.dp))
+                    }
+
+                    if (showDialog) {
+                        AddTaskPopUp(onDismissRequest = { showDialog = false }, prepreparetasks)
+
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Box(Modifier.height(300.dp)){
+                        TaskList(tasks+prepreparetasks)
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
                             viewModel.updateGoal(goalId, title, description, date, isFulfilled)
+
+                            viewModel2.addTasks(goalId, prepreparetasks)
+
+
                             navController.navigateUp()
                         },
                         modifier = Modifier.align(Alignment.End)
