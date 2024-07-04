@@ -84,4 +84,14 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
 
 
+
+        implementation ("androidx.compose.ui:ui:1.4.0")
+        implementation ("androidx.compose.material3:material3:1.0.1")
+        implementation ("androidx.compose.animation:animation:1.4.0")
+        implementation ("androidx.compose.runtime:runtime-livedata:1.4.0")
+        implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+        // Other dependencies...
+
+
+
 }

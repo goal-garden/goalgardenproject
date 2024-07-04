@@ -27,13 +27,16 @@ interface GoalDao {
     )
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addGoal(goal: Goal) //insert
+    suspend fun addGoal(goal: Goal): Long //insert
 
     @Update
     suspend fun updateGoal(goal: Goal)
 
     @Delete
     suspend fun deleteGoal(goal: Goal)
+
+    @Query("DELETE FROM goals WHERE goalId = :goalId")
+    suspend fun deleteGoal(goalId: Long)
 
     @Query("SELECT * FROM goals")
     fun getAllGoals(): Flow<List<Goal>>
