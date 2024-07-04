@@ -17,6 +17,7 @@ class GoalRepository(private val goalDao: GoalDao) {
     }
     suspend fun updateGoal(goal: Goal) = goalDao.updateGoal(goal)
     suspend fun deleteGoal(goal: Goal) = goalDao.deleteGoal(goal)
+    suspend fun deleteGoalById(goalId: Long) = goalDao.deleteGoal(goalId)
 
     // Flow indicates a long running async operation with multiple values
     fun getAllGoals(): Flow<List<Goal>> = goalDao.getAllGoals()

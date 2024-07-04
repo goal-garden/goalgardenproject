@@ -35,6 +35,9 @@ interface GoalDao {
     @Delete
     suspend fun deleteGoal(goal: Goal)
 
+    @Query("DELETE FROM goals WHERE goalId = :goalId")
+    suspend fun deleteGoal(goalId: Long)
+
     @Query("SELECT * FROM goals")
     fun getAllGoals(): Flow<List<Goal>>
 
