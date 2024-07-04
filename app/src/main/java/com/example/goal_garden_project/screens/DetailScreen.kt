@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
+import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
@@ -173,7 +174,11 @@ fun DetailScreen(goalId: Long, navController: NavController) {
                         Button(
                             onClick = {
                                 viewModel.deleteGoal(goalId)
-                                navController.popBackStack()
+                                navController.navigate(Screen.Home.route) {
+                                    popUpTo(Screen.Home.route) {
+                                        inclusive = true
+                                    }
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         ) {
