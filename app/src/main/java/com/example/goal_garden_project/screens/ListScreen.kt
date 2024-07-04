@@ -1,10 +1,15 @@
+@file:OptIn(ExperimentalLayoutApi::class)
+
 package com.example.goal_garden_project.screens
 
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,9 +19,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -43,6 +58,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
+import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.viewmodels.GoalViewModel
 import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
@@ -69,14 +85,26 @@ fun ListScreen(navController: NavController) {
         GoalFilterType.COMPLETED -> completedGoals
     }
 
-    Column {
-        SearchBar(searchQuery) { query ->
-            searchQuery = query
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize(),
+        bottomBar = {
+            SimpleBottomBar(navController, Screen.Add.route)
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            SearchBar(searchQuery) { query ->
+                searchQuery = query
+            }
+            FilterButtons(filterType) { selectedFilter ->
+                filterType = selectedFilter
+            }
+            ItemList(items, searchQuery.text, navController)
         }
-        FilterButtons(filterType) { selectedFilter ->
-            filterType = selectedFilter
-        }
-        ItemList(items, searchQuery.text)
     }
 }
 
@@ -89,42 +117,93 @@ fun SearchBar(searchQuery: TextFieldValue, onQueryChanged: (TextFieldValue) -> U
             .fillMaxWidth()
             .padding(16.dp),
         placeholder = { Text("Search") },
-        textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
+        textStyle = LocalTextStyle.current.copy(fontSize = 18.sp),
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Search icon"
+            )
+        }
+
     )
 }
 
 @Composable
 fun FilterButtons(currentFilter: GoalFilterType, onFilterChanged: (GoalFilterType) -> Unit) {
-    Row(
+    FlowRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        Button(onClick = { onFilterChanged(GoalFilterType.ALL) }) {
-            Text(text = "All Goals")
+        FilledTonalButton(onClick = { onFilterChanged(GoalFilterType.ALL) }) {
+            Icon(
+                imageVector = Icons.Default.List,
+                contentDescription = null,
+                modifier = Modifier
+            )
+            Text(text = "All Goals", modifier = Modifier.padding(5.dp))
         }
-        Button(onClick = { onFilterChanged(GoalFilterType.IN_PROGRESS) }) {
-            Text(text = "In Progress")
+
+        FilledTonalButton(
+            onClick = { onFilterChanged(GoalFilterType.IN_PROGRESS) }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Build,
+                contentDescription = "in progress",
+                modifier = Modifier
+            )
+            Text(text = "In Progress", modifier = Modifier.padding(5.dp))
         }
-        Button(onClick = { onFilterChanged(GoalFilterType.COMPLETED) }) {
-            Text(text = "Completed")
+
+        FilledTonalButton(onClick = { onFilterChanged(GoalFilterType.COMPLETED) }) {
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = null,
+                modifier = Modifier
+            )
+            Text(text = "Completed", modifier = Modifier.padding(5.dp))
+        }
+
+        FilledTonalButton(onClick = { onFilterChanged(GoalFilterType.ALL) }) {
+            Icon(
+                imageVector = Icons.Default.List,
+                contentDescription = null,
+                modifier = Modifier
+            )
+            Text(text = "Not seeded", modifier = Modifier.padding(5.dp))
         }
     }
 }
 
 @Composable
-fun ItemList(items: List<Goal>, searchQuery: String) {
+fun ItemList(items: List<Goal>, searchQuery: String, navController: NavController) {
     val filteredItems = items.filter { it.title.contains(searchQuery, ignoreCase = true) }
 
     LazyColumn {
         items(filteredItems) { item ->
-            Text(
-                text = item.title,
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                fontSize = 18.sp
-            )
+                    .padding(8.dp)
+                    .clickable {
+                        navController.navigate(
+                            Screen.Plant.route.replace(
+                                "{goalId}",
+                                item.goalId.toString()
+                            )
+                        )
+                    },
+                elevation = CardDefaults.cardElevation(4.dp)
+            ) {
+                Text(
+                    text = item.title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    fontSize = 18.sp
+                )
+            }
         }
     }
 }
@@ -136,7 +215,7 @@ enum class GoalFilterType {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-   ListScreen(navController = rememberNavController())
+    ListScreen(navController = rememberNavController())
 }
 
 
