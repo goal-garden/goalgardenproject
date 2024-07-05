@@ -74,6 +74,7 @@ import com.example.goal_garden_project.ui.theme.CustomYellow
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
+import com.example.goal_garden_project.widgets.AchievementProgress
 import com.example.goal_garden_project.widgets.ActionButton
 import com.example.goal_garden_project.widgets.TaskList
 import java.io.File
@@ -129,7 +130,8 @@ fun DetailScreen(goalId: Long, navController: NavController) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Box(modifier = Modifier.width(300.dp)) {
                         // Capture and share GoalCard
-                        GoalCard(goalWithTasks, imageResource) { capturedBitmap ->
+                        //TODO GET THE ACTUAL VALUE FOR TOTAL PICTURE NUMBER
+                        GoalCard(goalWithTasks, imageResource, 5) { capturedBitmap ->
                             bitmap = capturedBitmap
                         }
                         // Share button
@@ -213,7 +215,7 @@ fun DetailScreen(goalId: Long, navController: NavController) {
 }
 
 @Composable
-fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bitmap) -> Unit) {
+fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, totalPicturesNumber: Int,onCapture: (Bitmap) -> Unit) {
     val context = LocalContext.current
     val composeView = remember { ComposeView(context) }
 
@@ -229,7 +231,7 @@ fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bit
             ) {
                 Text(
                     text = goalWithTasks.goal.title,
-                    fontSize = 18.sp
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Image(
                     painter = painterResource(id = imageResourceId),
@@ -247,6 +249,8 @@ fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bit
                     text = "Status: ${if (goalWithTasks.goal.isFulfilled) "Completed" else "In Progress"}",
                     style = MaterialTheme.typography.bodyMedium
                 )
+                val progress = (goalWithTasks.goal.progressionStage.toFloat() / totalPicturesNumber * 100).coerceAtMost(100f)
+                AchievementProgress(title = "", progress = progress)
             }
         }
     }
