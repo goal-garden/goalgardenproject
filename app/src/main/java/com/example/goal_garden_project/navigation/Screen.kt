@@ -21,6 +21,6 @@ sealed class Screen (val route: String, val title: String, val icon: ImageVector
     data object List : Screen("listscreen", "List", Icons.Default.List)
     data object Add : Screen("addscreen", "Add", Icons.Default.Add)
     data object Task : Screen("taskscreen", "Task", Icons.Default.Done)
-    data object Rewards : Screen("rewardscreen", "Reward", Icons.Default.Done)
+    data object Rewards : Screen("rewardscreen", "Rewards", Icons.Default.Star)
 
 }

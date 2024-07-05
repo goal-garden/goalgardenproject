@@ -42,41 +42,49 @@ import com.example.goal_garden_project.navigation.Screen
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)     //das braucht man für die topbar, macht der typ im youtubevideo auch (von den bereitgestellten resourcen)
-fun SimpleTopBar(text:String?, backButton:Boolean = false, navController:NavController? =null) {      //eigenen funktion mainly for readability
+fun SimpleTopBar(
+    text: String?,
+    backButton: Boolean = false,
+    navController: NavController? = null
+) {      //eigenen funktion mainly for readability
     CenterAlignedTopAppBar(
         title = {
-            Text(text?:"")
+            Text(text ?: "")
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.primary,
         ),
         navigationIcon = {
-            if (backButton){
-            IconButton(onClick = { navController?.popBackStack() }) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Localized description"
-                )
+            if (backButton) {
+                IconButton(onClick = { navController?.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Localized description"
+                    )
+                }
             }
-        }}
-        ,
+        },
     )
 }
 
 
 @Composable
-fun SimpleBottomBar(navController: NavController, screenRoute : String, floatingButtonColor: Color = MaterialTheme.colorScheme.primary) {
+fun SimpleBottomBar(
+    navController: NavController,
+    screenRoute: String,
+    floatingButtonColor: Color = MaterialTheme.colorScheme.primary
+) {
     val screens = listOf(
         Screen.List,
         Screen.Home,
         Screen.Task,
-
-        )
+        Screen.Rewards
+    )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    Box{
+    Box {
         Row(        //row with spacer is used because there is no functionality for padding bottomAppBars within their own modifier
             Modifier
                 .fillMaxWidth()
@@ -91,13 +99,16 @@ fun SimpleBottomBar(navController: NavController, screenRoute : String, floating
             ) {
                 IconsAdder(screens, currentDestination, navController)
             }
-            Spacer(modifier = Modifier.width(80.dp) ) // Reserve space for the add button
+            Spacer(modifier = Modifier.width(80.dp)) // Reserve space for the add button
         }
 
         FloatingActionButton(
-            onClick = {navController.navigate(screenRoute)},  // keeps the current screen in the back stack
+            onClick = { navController.navigate(screenRoute) },  // keeps the current screen in the back stack
             modifier = Modifier
-                .offset(y = (-50).dp, x = (-30).dp) // Adjust this value to control how much the FAB overlaps the BottomAppBar
+                .offset(
+                    y = (-50).dp,
+                    x = (-30).dp
+                ) // Adjust this value to control how much the FAB overlaps the BottomAppBar
                 .align(Alignment.BottomEnd),
             containerColor = floatingButtonColor,
             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -108,24 +119,31 @@ fun SimpleBottomBar(navController: NavController, screenRoute : String, floating
 }
 
 
-
 @Composable
-fun RowScope.IconsAdder(screens: List<Screen>, currentDestination: NavDestination?,
-                        navController: NavController){      //extra damit ichs schnell auch in andere app gebrauchen kann, oder wenn ich wieder ne liste an icons erstellen muss
-    screens.forEach { screen -> (
-            NavigationBarItem( selected = currentDestination?.hierarchy?.any {
-                it.route==screen.route
-            } ==true,
-                onClick = {navController.navigate(screen.route){
-                    popUpTo(navController.graph.findStartDestination().id)
-                    launchSingleTop = true      //damits keine copies von der selben page gibt
-                } },
-                label = {Text(text = screen.title)},
-                icon = {Icon(
-                    imageVector = screen.icon,
-                    contentDescription = screen.title
-                )}
-            ))
+fun RowScope.IconsAdder(
+    screens: List<Screen>, currentDestination: NavDestination?,
+    navController: NavController
+) {      //extra damit ichs schnell auch in andere app gebrauchen kann, oder wenn ich wieder ne liste an icons erstellen muss
+    screens.forEach { screen ->
+        (
+                NavigationBarItem(selected = currentDestination?.hierarchy?.any {
+                    it.route == screen.route
+                } == true,
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id)
+                            launchSingleTop =
+                                true      //damits keine copies von der selben page gibt
+                        }
+                    },
+                    label = { Text(text = screen.title) },
+                    icon = {
+                        Icon(
+                            imageVector = screen.icon,
+                            contentDescription = screen.title
+                        )
+                    }
+                ))
     }
 }
 
