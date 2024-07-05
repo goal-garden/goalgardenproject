@@ -27,7 +27,10 @@ data class Goal(
     var title: String,
     var description: String,
     var date: Int,      //save as milliseconds and convert it then to date
-    var isFulfilled: Boolean = false
+    var isFulfilled: Boolean = false,
+    var reminderOn: Boolean = false,
+    var reminderTime: Int =0,
+    var reminderInterval: Int =0 //in days
 )
 //later we could add parameter to change color of pot or form or whatsoever..
 //    ){

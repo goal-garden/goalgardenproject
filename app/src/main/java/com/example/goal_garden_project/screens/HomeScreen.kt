@@ -1,8 +1,14 @@
 package com.example.goal_garden_project.screens
 
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +24,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,14 +39,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.navigation.Screen
+import com.example.goal_garden_project.reminder.NotificationHandler
 import com.example.goal_garden_project.viewmodels.GoalViewModel
 import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
 
 
+@RequiresApi(Build.VERSION_CODES.M)
 @SuppressLint("DiscouragedApi")
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -52,12 +63,14 @@ fun HomeScreen(navController: NavController) {
 
     val goalsWithPlantPicture by viewModel.goalsWithPlantPicture.collectAsState()
 
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             SimpleBottomBar(navController, Screen.Add.route)
         }
     ) { innerPadding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -70,6 +83,7 @@ fun HomeScreen(navController: NavController) {
                 // Iterate through each row (you want 4 rows)
                 items((goalsWithPlantPicture.chunked(3) + List(4 - goalsWithPlantPicture.size / 3) { emptyList() })) { rowItems ->
                     // Each chunk represents a row with 3 items or fewer (last row might have less than 3 items)
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
