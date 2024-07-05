@@ -13,6 +13,7 @@ import com.example.goal_garden_project.screens.EditScreen
 import com.example.goal_garden_project.screens.HomeScreen
 import com.example.goal_garden_project.screens.ListScreen
 import com.example.goal_garden_project.screens.PlantScreen
+import com.example.goal_garden_project.screens.RewardsScreen
 import com.example.goal_garden_project.screens.TaskScreen
 
 @Composable
@@ -37,6 +38,9 @@ fun Navigation() {
         }
         composable(route = Screen.List.route){
             ListScreen(navController = navController)//, moviesViewModel)
+        }
+        composable(route = Screen.Rewards.route){
+            RewardsScreen(navController = navController)//, moviesViewModel)
         }
         composable(
             route = Screen.Detail.route,
