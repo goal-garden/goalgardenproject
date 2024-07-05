@@ -1,6 +1,12 @@
 package com.example.goal_garden_project.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,6 +51,7 @@ import com.example.goal_garden_project.data.repositories.PlantRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.models.Task
+import com.example.goal_garden_project.reminder.NotificationHandler
 import com.example.goal_garden_project.viewmodels.AddTaskViewModel
 import com.example.goal_garden_project.viewmodels.AddTaskViewModelFactory
 
@@ -58,6 +65,7 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun AddScreen(navController: NavController) {
     val context = LocalContext.current
@@ -80,6 +88,22 @@ fun AddScreen(navController: NavController) {
     var tasks by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var prepreparetasks = remember { mutableStateListOf<Task>()}
+    val notificationHandler = NotificationHandler(context)
+
+
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Permission is granted, send notification
+            println("granted")
+            notificationHandler.sendNotification("Goal Achieved!", "You have completed your goal.")
+        } else {
+            println("denied")
+            // Permission is denied
+            // Optionally handle the case where permission is denied
+        }
+    }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -179,9 +203,28 @@ fun AddScreen(navController: NavController) {
                     AddTaskPopUp(onDismissRequest = { showDialog = false }, prepreparetasks)
 
                 }
-                Box(Modifier.height(400.dp)){
+                Box(Modifier.height(200.dp)){
                     TaskList(prepreparetasks)
                 }
+                Button(
+                    onClick = {
+                        if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                            == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            println("send notification")
+                            // Permission already granted, send notification
+                            notificationHandler.sendNotification("Goal Achieved!", "You have completed your goal.")
+                        } else {
+                            // Request permission
+                            println("request permission")
+                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    },
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text("Send Notification")
+                }
+
 
                 Button(
                     onClick = {
