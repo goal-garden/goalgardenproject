@@ -3,6 +3,7 @@ package com.example.goal_garden_project.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goal_garden_project.data.repositories.GoalRepository
+import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.models.GoalWithPlantPicture
 import com.example.goal_garden_project.models.GoalWithTasks
 import kotlinx.coroutines.flow.Flow
@@ -45,6 +46,31 @@ class DetailViewModel(
                 }
         }
         return _goalWithPlantPicture.asStateFlow()
+    }
+
+    fun updateGoal(goalId: Long, title: String, description: String, date: Int, isFulfilled: Boolean) {
+        viewModelScope.launch {
+            val currentGoal = repository.getGoalById(goalId)
+            currentGoal.collect { goal ->
+                goal?.let {
+                    val updatedGoal = Goal(
+                        goalId = it.goalId,
+                        plantId = it.plantId,
+                        progressionStage = it.progressionStage,
+                        title = title,
+                        description = description,
+                        date = date,
+                        isFulfilled = isFulfilled
+                    )
+                    repository.updateGoal(updatedGoal)
+                }
+            }
+        }
+    }
+    fun deleteGoal(goalId: Long) {
+        viewModelScope.launch {
+            repository.deleteGoalById(goalId)
+        }
     }
 
 

@@ -10,6 +10,7 @@ import com.example.goal_garden_project.data.repositories.PlantRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.models.Picture
 import com.example.goal_garden_project.models.PlantWithPictures
+import com.example.goal_garden_project.models.Task
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +22,11 @@ class AddViewModel (private val repository: GoalRepository, private val reposito
 
     private val _pictures = MutableStateFlow<List<GoalDao.IdImageTitle>?>(null)
     val pictures: StateFlow<List<GoalDao.IdImageTitle>?> = _pictures.asStateFlow()
+
+    private var _goalId = MutableStateFlow<Long>(0)
+    var goalId: StateFlow<Long> = _goalId.asStateFlow()
+
+    private var goalId2:Long =0
 
 
     //hier muss ich dann nur die liste von verfügbaren plants laden
@@ -37,9 +43,11 @@ class AddViewModel (private val repository: GoalRepository, private val reposito
     }
     fun addGoal(goal: Goal) {
         viewModelScope.launch {
-            repository.addGoal(goal)
-
+            _goalId.value=repository.addGoal(goal)
+            println(_goalId.value)
         }
     }
+
+
 
 }

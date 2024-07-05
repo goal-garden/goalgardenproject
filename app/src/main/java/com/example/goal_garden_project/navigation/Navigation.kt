@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.example.goal_garden_project.screens.AddScreen
 import com.example.goal_garden_project.screens.DetailScreen
 import com.example.goal_garden_project.screens.AddTaskScreen
+import com.example.goal_garden_project.screens.EditScreen
 import com.example.goal_garden_project.screens.HomeScreen
 import com.example.goal_garden_project.screens.ListScreen
 import com.example.goal_garden_project.screens.PlantScreen
@@ -42,6 +43,13 @@ fun Navigation() {
             arguments = listOf(navArgument(name = "goalId") {type = NavType.StringType})
         ) { backStackEntry ->
             DetailScreen(goalId = backStackEntry.arguments?.getString("goalId")?.toLong() ?: 0, navController)
+
+        }
+        composable(
+            route = Screen.Edit.route,
+            arguments = listOf(navArgument(name = "goalId") {type = NavType.StringType})
+        ) { backStackEntry ->
+            EditScreen(goalId = backStackEntry.arguments?.getString("goalId")?.toLong() ?: 0, navController)
 
         }
         composable(

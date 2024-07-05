@@ -11,9 +11,13 @@ import kotlinx.coroutines.flow.Flow
 class GoalRepository(private val goalDao: GoalDao) {
 
     // Suspend indicates a long running async operation - coroutines
-    suspend fun addGoal(goal: Goal) = goalDao.addGoal(goal)
+    suspend fun addGoal(goal: Goal): Long {
+        val goalId = goalDao.addGoal(goal)
+        return goalId
+    }
     suspend fun updateGoal(goal: Goal) = goalDao.updateGoal(goal)
     suspend fun deleteGoal(goal: Goal) = goalDao.deleteGoal(goal)
+    suspend fun deleteGoalById(goalId: Long) = goalDao.deleteGoal(goalId)
 
     // Flow indicates a long running async operation with multiple values
     fun getAllGoals(): Flow<List<Goal>> = goalDao.getAllGoals()
