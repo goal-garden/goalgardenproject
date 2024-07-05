@@ -1,13 +1,16 @@
 package com.example.goal_garden_project.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.view.View
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,7 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -29,6 +31,7 @@ import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -38,7 +41,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,34 +54,39 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.FileProvider
+import androidx.core.view.drawToBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.goal_garden_project.R
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
-import com.example.goal_garden_project.data.repositories.PictureRepository
-import com.example.goal_garden_project.data.repositories.PlantRepository
 import com.example.goal_garden_project.models.GoalWithTasks
 import com.example.goal_garden_project.models.Task
-import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.ui.theme.CustomYellow
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
-import com.example.goal_garden_project.viewmodels.GoalViewModel
-import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
-import com.example.goal_garden_project.widgets.SimpleBottomBar
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
+
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -105,6 +112,8 @@ fun DetailScreen(goalId: Long, navController: NavController) {
         R.drawable.sonnenb5 // Replace with your default drawable resource
     }
 
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -124,7 +133,29 @@ fun DetailScreen(goalId: Long, navController: NavController) {
         ) {
             goalWithTasks?.let { goalWithTasks ->
                 Column(modifier = Modifier.padding(16.dp)) {
-                    GoalCard(goalWithTasks, imageResource)
+                    Box(modifier = Modifier.width(300.dp)) {
+                        // Capture and share GoalCard
+                        GoalCard(goalWithTasks, imageResource) { capturedBitmap ->
+                            bitmap = capturedBitmap
+                        }
+                        // Share button
+                        IconButton(
+                            onClick = {
+                                bitmap?.let {
+                                    val file = saveBitmapToFile(context, it)
+                                    shareImage(context, file)
+                                }
+                            },
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(end = 20.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Share,
+                                contentDescription = "Share"
+                            )
+                        }
+                    }
                     Text(text = "Tasks", modifier = Modifier.padding(5.dp), fontSize = 18.sp)
                     TaskList(goalWithTasks.tasks)
                     Row {
@@ -141,23 +172,24 @@ fun DetailScreen(goalId: Long, navController: NavController) {
 }
 
 @Composable
-fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int) {
-    Row(
-        modifier = Modifier
-            .padding(bottom = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Card with image and text
+fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bitmap) -> Unit) {
+    val context = LocalContext.current
+    val composeView = remember { ComposeView(context) }
+
+    // Set content of ComposeView
+    composeView.setContent {
         Card(
-            modifier = Modifier
-                .weight(1f)
-                .padding(10.dp),
+            modifier = Modifier.width(IntrinsicSize.Min),
             elevation = CardDefaults.cardElevation(4.dp)
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(
+                    text = goalWithTasks.goal.title,
+                    fontSize = 18.sp
+                )
                 Image(
                     painter = painterResource(id = imageResourceId),
                     contentDescription = "Goal Image",
@@ -166,7 +198,6 @@ fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int) {
                         .clip(RoundedCornerShape(10.dp))
                 )
                 Spacer(modifier = Modifier.height(5.dp))
-
                 Text(
                     text = "Description: ${goalWithTasks.goal.description}",
                     style = MaterialTheme.typography.bodyMedium
@@ -176,23 +207,28 @@ fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int) {
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-
-        }
-
-        // Share button
-        IconButton(
-            onClick = {
-                // Handle share action
-            },
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Share,
-                contentDescription = "Share"
-            )
-
         }
     }
+
+    // Create and return the bitmap
+    LaunchedEffect(Unit) {
+        val bitmap = Bitmap.createBitmap(
+            composeView.width,
+            composeView.height,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = android.graphics.Canvas(bitmap)
+        composeView.draw(canvas)
+        onCapture(bitmap)
+    }
+
+    // Add the ComposeView to the layout
+    AndroidView(
+        factory = { composeView },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    )
 }
 
 @Composable
@@ -232,9 +268,39 @@ fun ActionButton(text: String, icon: ImageVector, color: Color = LocalContentCol
         },
         modifier = Modifier.padding(end = 16.dp),
     ) {
-        Text(text = text, modifier = Modifier.padding(end = 2.dp), fontSize = 18.sp, color = color)
+        Text(
+            text = text,
+            modifier = Modifier.padding(end = 2.dp),
+            fontSize = 18.sp,
+            color = color
+        )
         Icon(imageVector = icon, contentDescription = text)
     }
+}
+
+fun saveBitmapToFile(context: Context, bitmap: Bitmap): File {
+    val file = File(context.cacheDir, "${UUID.randomUUID()}.png")
+    FileOutputStream(file).use { out ->
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+    }
+    return file
+}
+
+fun shareImage(context: Context, file: File) {
+    val uri: Uri = FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.fileprovider",
+        file
+    )
+
+    val shareIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_STREAM, uri)
+        type = "image/png"
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+
+    context.startActivity(Intent.createChooser(shareIntent, null))
 }
 
 @Preview(showBackground = true)
