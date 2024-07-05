@@ -74,6 +74,7 @@ import com.example.goal_garden_project.ui.theme.CustomYellow
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
+import com.example.goal_garden_project.widgets.TaskList
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
@@ -121,7 +122,7 @@ fun DetailScreen(goalId: Long, navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+
         ) {
             goalWithTasks?.let { goalWithTasks ->
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -149,7 +150,10 @@ fun DetailScreen(goalId: Long, navController: NavController) {
                         }
                     }
                     Text(text = "Tasks", modifier = Modifier.padding(5.dp), fontSize = 18.sp)
-                    TaskList(goalWithTasks.tasks)
+                    Box(Modifier.height(300.dp)) {
+                        TaskList(goalWithTasks.tasks)
+                    }
+                    Spacer(modifier = Modifier.height(26.dp))
                     Row {
                         ActionButton(
                             text = "Edit",
@@ -270,34 +274,6 @@ fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bit
     )
 }
 
-@Composable
-fun TaskList(tasks: List<Task>) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp)
-    ) {
-        tasks.forEach { task ->
-            TaskCard(task)
-        }
-    }
-}
-
-@Composable
-fun TaskCard(task: Task) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Text(
-            text = task.name,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }
-}
 
 @Composable
 fun ActionButton(
