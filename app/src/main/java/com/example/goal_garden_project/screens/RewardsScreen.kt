@@ -44,6 +44,7 @@ import com.example.goal_garden_project.viewmodels.GoalViewModel
 import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.viewmodels.TaskViewModel
 import com.example.goal_garden_project.viewmodels.TaskViewModelFactory
+import com.example.goal_garden_project.widgets.AchievementProgress
 import com.example.goal_garden_project.widgets.SimpleBottomBar
 import com.example.goal_garden_project.widgets.SimpleTopBar
 
@@ -126,38 +127,6 @@ fun RewardsScreen(navController: NavController) {
                 )
             }
         }
-    }
-}
-
-@Composable
-fun AchievementProgress(title: String, progress: Float) {
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        elevation = CardDefaults.cardElevation(2.dp)
-    ) {
-        Text(
-            text = title,
-            modifier = Modifier.padding(5.dp),
-            style = MaterialTheme.typography.titleMedium
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        LinearProgressIndicator(
-            progress = progress / 100,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(15.dp)
-                .padding(start = 10.dp, end = 10.dp),
-            trackColor = Color.LightGray,
-            color = CustomGreen
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = "${progress.toInt()}%",
-            modifier = Modifier.padding(5.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }
 

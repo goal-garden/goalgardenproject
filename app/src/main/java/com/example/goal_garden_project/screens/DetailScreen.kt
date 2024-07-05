@@ -74,6 +74,8 @@ import com.example.goal_garden_project.ui.theme.CustomYellow
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
+import com.example.goal_garden_project.widgets.ActionButton
+import com.example.goal_garden_project.widgets.TaskList
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
@@ -268,56 +270,6 @@ fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bit
             .fillMaxWidth()
             .padding(10.dp)
     )
-}
-
-@Composable
-fun TaskList(tasks: List<Task>) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp)
-    ) {
-        tasks.forEach { task ->
-            TaskCard(task)
-        }
-    }
-}
-
-@Composable
-fun TaskCard(task: Task) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Text(
-            text = task.name,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }
-}
-
-@Composable
-fun ActionButton(
-    text: String,
-    icon: ImageVector,
-    color: Color = LocalContentColor.current,
-    onClick: () -> Unit
-) {
-    FilledTonalButton(
-        onClick = onClick,
-        modifier = Modifier.padding(end = 16.dp),
-    ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(end = 2.dp),
-            fontSize = 18.sp,
-            color = color
-        )
-        Icon(imageVector = icon, contentDescription = text)
-    }
 }
 
 fun saveBitmapToFile(context: Context, bitmap: Bitmap): File {
