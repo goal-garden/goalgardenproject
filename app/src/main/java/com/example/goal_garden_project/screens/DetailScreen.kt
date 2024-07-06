@@ -143,14 +143,17 @@ fun DetailScreen(goalId: Long, navController: NavController) {
             goalWithTasks?.let { goalWithTasks ->
                 Column(modifier = Modifier.padding(16.dp)) {
                     Box(modifier = Modifier.width(300.dp)) {
-                        //picture ids start from 0 so we have to add 1 to the max number
                         val rawMaxPictureNumber: Int? =
                             taskViewModel.maxProgressionNumber.collectAsState().value
-                        Log.d("Detail screen ", "$rawMaxPictureNumber")
+                        Log.d("Detail rawNumber ", "$rawMaxPictureNumber")
                         val maxPictureNumber: Int = rawMaxPictureNumber ?: 0
                         // Capture and share GoalCard
 
-                        GoalCard(goalWithTasks, imageResource, maxPictureNumber+1) { capturedBitmap ->
+                        GoalCard(
+                            goalWithTasks,
+                            imageResource,
+                            (maxPictureNumber)
+                        ) { capturedBitmap ->
                             bitmap = capturedBitmap
                         }
                         // Share button
@@ -242,7 +245,7 @@ fun GoalCard(
 ) {
     val context = LocalContext.current
     val composeView = remember { ComposeView(context) }
-
+    Log.d("total pic n", "$totalPicturesNumber")
     // Set content of ComposeView
     composeView.setContent {
         Card(
@@ -277,6 +280,7 @@ fun GoalCard(
                     (goalWithTasks.goal.progressionStage.toFloat() / totalPicturesNumber * 100).coerceAtMost(
                         100f
                     )
+                Log.d("sssss", "${goalWithTasks.goal.progressionStage.toFloat()}")
                 AchievementProgress(title = "", progress = progress)
             }
         }
