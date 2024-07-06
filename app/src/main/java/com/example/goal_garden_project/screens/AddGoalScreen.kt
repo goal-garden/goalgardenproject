@@ -206,6 +206,7 @@ fun AddScreen(navController: NavController) {
                 Box(Modifier.height(200.dp)){
                     TaskList(prepreparetasks)
                 }
+                /*
                 Button(
                     onClick = {
                         if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
@@ -213,17 +214,24 @@ fun AddScreen(navController: NavController) {
                         ) {
                             println("send notification")
                             // Permission already granted, send notification
+                            val notificationHandler = NotificationHandler(context)
+                            notificationHandler.scheduleDailyNotification()
+
                             notificationHandler.sendNotification("Goal Achieved!", "You have completed your goal.")
                         } else {
                             // Request permission
                             println("request permission")
                             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+
                         }
+
                     },
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text("Send Notification")
                 }
+
+                 */
 
 
                 Button(
