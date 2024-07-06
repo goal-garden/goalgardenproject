@@ -20,9 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
@@ -138,7 +136,7 @@ fun DetailScreen(goalId: Long, navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+
         ) {
             goalWithTasks?.let { goalWithTasks ->
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -175,7 +173,10 @@ fun DetailScreen(goalId: Long, navController: NavController) {
                         }
                     }
                     Text(text = "Tasks", modifier = Modifier.padding(5.dp), fontSize = 18.sp)
-                    TaskList(goalWithTasks.tasks)
+                    Box(Modifier.height(300.dp)) {
+                        TaskList(goalWithTasks.tasks)
+                    }
+                    Spacer(modifier = Modifier.height(26.dp))
                     Row {
                         ActionButton(
                             text = "Edit",

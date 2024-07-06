@@ -76,7 +76,7 @@ fun EditScreen(goalId: Long, navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+
         ) {
             specificGoal?.let {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -139,7 +139,7 @@ fun EditScreen(goalId: Long, navController: NavController) {
 
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    Box(Modifier.height(300.dp)){
+                    Box(Modifier.height(200.dp)){
                         TaskList(tasks+prepreparetasks)
                     }
                     Spacer(modifier = Modifier.height(16.dp))
