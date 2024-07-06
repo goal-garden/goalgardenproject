@@ -5,8 +5,8 @@ import androidx.room.Relation
 
 class GoalWithPlantPicture(
     val title: String,
-    val pictureId: Int,
-    val plantId: Int,
+    val pictureId: Long,
+    val plantId: Long,
     val progressionStage: Int,
     val imageUrl: String,
     val goalId: Int

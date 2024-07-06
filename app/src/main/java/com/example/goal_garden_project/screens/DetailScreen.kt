@@ -7,24 +7,20 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.view.View
+import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
@@ -34,10 +30,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -52,7 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -67,13 +60,18 @@ import androidx.navigation.compose.rememberNavController
 import com.example.goal_garden_project.R
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
+import com.example.goal_garden_project.data.repositories.PictureRepository
+import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.GoalWithTasks
-import com.example.goal_garden_project.models.Task
 import com.example.goal_garden_project.navigation.Screen
 import com.example.goal_garden_project.ui.theme.CustomYellow
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
+import com.example.goal_garden_project.viewmodels.TaskViewModel
+import com.example.goal_garden_project.viewmodels.TaskViewModelFactory
+import com.example.goal_garden_project.widgets.AchievementProgress
+import com.example.goal_garden_project.widgets.ActionButton
 import com.example.goal_garden_project.widgets.TaskList
 import java.io.File
 import java.io.FileOutputStream
@@ -89,6 +87,15 @@ fun DetailScreen(goalId: Long, navController: NavController) {
     val factory = DetailViewModelFactory(repository = goalRepository)
     val viewModel: DetailViewModel = viewModel(factory = factory)
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val taskRepository = TaskRepository(taskDao = db.taskDao())
+    val pictureRepository = PictureRepository(pictureDao = db.pictureDao())
+    val taskViewModelFactory = TaskViewModelFactory(
+        repository = taskRepository,
+        repository2 = goalRepository,
+        repository3 = pictureRepository
+    )
+    val taskViewModel: TaskViewModel = viewModel(factory = taskViewModelFactory)
+
 
     LaunchedEffect(key1 = goalId) {
         viewModel.getGoalById(goalId)
@@ -97,6 +104,13 @@ fun DetailScreen(goalId: Long, navController: NavController) {
 
     val goalWithTasks by viewModel.specificGoal.collectAsState()
     val goalWithPlantPicture by viewModel.goalWithPlantPicture.collectAsState()
+
+    LaunchedEffect(key1 = goalWithPlantPicture) {
+        goalWithPlantPicture?.let {
+            taskViewModel.getMaxProgressionNumber(plantId = it.plantId)
+        }
+    }
+
     val imageUrl = goalWithPlantPicture?.imageUrl
     val imageResource = if (imageUrl != null) {
         context.resources.getIdentifier(imageUrl, "drawable", context.packageName)
@@ -127,8 +141,17 @@ fun DetailScreen(goalId: Long, navController: NavController) {
             goalWithTasks?.let { goalWithTasks ->
                 Column(modifier = Modifier.padding(16.dp)) {
                     Box(modifier = Modifier.width(300.dp)) {
+                        val rawMaxPictureNumber: Int? =
+                            taskViewModel.maxProgressionNumber.collectAsState().value
+                        Log.d("Detail rawNumber ", "$rawMaxPictureNumber")
+                        val maxPictureNumber: Int = rawMaxPictureNumber ?: 0
                         // Capture and share GoalCard
-                        GoalCard(goalWithTasks, imageResource) { capturedBitmap ->
+
+                        GoalCard(
+                            goalWithTasks,
+                            imageResource,
+                            (maxPictureNumber)
+                        ) { capturedBitmap ->
                             bitmap = capturedBitmap
                         }
                         // Share button
@@ -215,10 +238,15 @@ fun DetailScreen(goalId: Long, navController: NavController) {
 }
 
 @Composable
-fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bitmap) -> Unit) {
+fun GoalCard(
+    goalWithTasks: GoalWithTasks,
+    imageResourceId: Int,
+    totalPicturesNumber: Int,
+    onCapture: (Bitmap) -> Unit
+) {
     val context = LocalContext.current
     val composeView = remember { ComposeView(context) }
-
+    Log.d("total pic n", "$totalPicturesNumber")
     // Set content of ComposeView
     composeView.setContent {
         Card(
@@ -231,7 +259,7 @@ fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bit
             ) {
                 Text(
                     text = goalWithTasks.goal.title,
-                    fontSize = 18.sp
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Image(
                     painter = painterResource(id = imageResourceId),
@@ -249,6 +277,12 @@ fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bit
                     text = "Status: ${if (goalWithTasks.goal.isFulfilled) "Completed" else "In Progress"}",
                     style = MaterialTheme.typography.bodyMedium
                 )
+                val progress =
+                    (goalWithTasks.goal.progressionStage.toFloat() / totalPicturesNumber * 100).coerceAtMost(
+                        100f
+                    )
+                Log.d("sssss", "${goalWithTasks.goal.progressionStage.toFloat()}")
+                AchievementProgress(title = "", progress = progress)
             }
         }
     }
@@ -272,28 +306,6 @@ fun GoalCard(goalWithTasks: GoalWithTasks, imageResourceId: Int, onCapture: (Bit
             .fillMaxWidth()
             .padding(10.dp)
     )
-}
-
-
-@Composable
-fun ActionButton(
-    text: String,
-    icon: ImageVector,
-    color: Color = LocalContentColor.current,
-    onClick: () -> Unit
-) {
-    FilledTonalButton(
-        onClick = onClick,
-        modifier = Modifier.padding(end = 16.dp),
-    ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(end = 2.dp),
-            fontSize = 18.sp,
-            color = color
-        )
-        Icon(imageVector = icon, contentDescription = text)
-    }
 }
 
 fun saveBitmapToFile(context: Context, bitmap: Bitmap): File {
