@@ -17,8 +17,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 
 import kotlinx.coroutines.launch
+
 //use for task screen
-class TaskViewModel (private val repository: TaskRepository, private val repository2: GoalRepository,private val repository3: PictureRepository
+class TaskViewModel(
+    private val repository: TaskRepository,
+    private val repository2: GoalRepository,
+    private val repository3: PictureRepository
 ) : ViewModel() {
 
     private val _tasks = MutableStateFlow(listOf<Task>())
@@ -33,20 +37,29 @@ class TaskViewModel (private val repository: TaskRepository, private val reposit
     private val _unfinishedTasks = MutableStateFlow(listOf<Task>())
     val unfinishedTasks: StateFlow<List<Task>> = _unfinishedTasks.asStateFlow()
 
-
+    private val _maxProgressionNumber = MutableStateFlow<Int?>(value = null)
+    val maxProgressionNumber: StateFlow<Int?> = _maxProgressionNumber.asStateFlow()
 
     init {
-
         viewModelScope.launch {
             repository.getAllTasks().distinctUntilChanged()
                 .collect { tasks ->
                     _tasks.value = tasks
                 }
-
         }
     }
 
-    fun getUnfinishedTasks(goalId:Long): StateFlow<List<Task>>{
+    fun getMaxProgressionNumber(plantId: Long): StateFlow<Int?> {
+        viewModelScope.launch {
+            repository3.getMaxProgressionNumber(plantId).distinctUntilChanged()
+                .collect { number ->
+                    _maxProgressionNumber.value = number
+                }
+        }
+        return _maxProgressionNumber.asStateFlow()
+    }
+
+    fun getUnfinishedTasks(goalId: Long): StateFlow<List<Task>> {
         viewModelScope.launch {
             repository.getUnfinishedTasks(goalId)
                 .collect { tasks ->
@@ -65,26 +78,23 @@ class TaskViewModel (private val repository: TaskRepository, private val reposit
                     _task.value = updatedTask
                 }
             }
-        }}
-
+        }
+    }
 
     fun waterPlant(goalId: Long) {
         viewModelScope.launch {
             repository2.getGoalById(goalId).firstOrNull()?.let { goal ->
-                repository3.getMaxProgressionNumber(goal.plantId).firstOrNull()?.let { maxProgressionNumber ->
-                    if (goal.progressionStage < maxProgressionNumber) {
-                        val updatedGoal = goal.copy(progressionStage = goal.progressionStage + 1)
-                        repository2.updateGoal(updatedGoal)
+                repository3.getMaxProgressionNumber(goal.plantId).firstOrNull()
+                    ?.let { maxProgressionNumber ->
+                        if (goal.progressionStage < maxProgressionNumber) {
+                            val updatedGoal =
+                                goal.copy(progressionStage = goal.progressionStage + 1)
+                            repository2.updateGoal(updatedGoal)
+                        } else {
+                            println("max progression reached")
+                        }
                     }
-                    else{
-                        println("max progression reached")
-                    }
-                }
-            }
             }
         }
-
-
-
-
+    }
 }
