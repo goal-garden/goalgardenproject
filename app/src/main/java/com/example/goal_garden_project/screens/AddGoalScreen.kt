@@ -265,7 +265,7 @@ fun AddScreen(navController: NavController) {
                             progressionStage = 0,
                             title = title,
                             description = description,
-                            date = Date().time.toInt(),
+                            date = System.currentTimeMillis(),
                             isFulfilled = false,
                             isSeeded = !seedlater
                         )
