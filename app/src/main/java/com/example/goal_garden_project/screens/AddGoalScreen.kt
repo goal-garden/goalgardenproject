@@ -186,7 +186,8 @@ fun AddScreen(navController: NavController) {
                     Text("Set Reminder", modifier = Modifier.weight(1f))
                     Switch(
                         checked = isReminderSet,
-                        onCheckedChange = { isReminderSet = it
+                        onCheckedChange = {
+                            isReminderSet = it
                             coroutineScope.launch {
                                 if (ContextCompat.checkSelfPermission(
                                         context,
@@ -197,7 +198,8 @@ fun AddScreen(navController: NavController) {
                                 } else {
                                     notificationPermissionLauncher.launch("android.permission.POST_NOTIFICATIONS")
                                 }
-                            }}
+                            }
+                        }
                     )
                 }
                 Row(
@@ -207,8 +209,9 @@ fun AddScreen(navController: NavController) {
                     Text("Seed Later", modifier = Modifier.weight(1f))
                     Switch(
                         checked = seedlater,
-                        onCheckedChange = { seedlater = it
-                            }
+                        onCheckedChange = {
+                            seedlater = it
+                        }
                     )
                 }
 
@@ -230,7 +233,9 @@ fun AddScreen(navController: NavController) {
                             selectedInterval = interval
                             notificationInterval = value
                         },
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
                     )
                 }
 
@@ -238,11 +243,11 @@ fun AddScreen(navController: NavController) {
                     onClick = {
                         showTaskDialog = true
                     },
-                    ) {
+                ) {
                     Text(
                         text = "Add Task",
 
-                    )
+                        )
                 }
                 if (showTaskDialog) {
                     AddTaskPopUp(onDismissRequest = { showTaskDialog = false }, prepreparetasks)
@@ -261,13 +266,14 @@ fun AddScreen(navController: NavController) {
                             title = title,
                             description = description,
                             date = Date().time.toInt(),
-                            isFulfilled = false
+                            isFulfilled = false,
+                            isSeeded = !seedlater
                         )
                         coroutineScope.launch {
-                            val goalId= viewModel.addGoal(goal)
+                            val goalId = viewModel.addGoal(goal)
 
                             Toast.makeText(context, "Goal added", Toast.LENGTH_SHORT).show()
-                            if (prepreparetasks.isNotEmpty()){
+                            if (prepreparetasks.isNotEmpty()) {
                                 addTaskViewModel.addTasks(goalId, prepreparetasks)
                             }
                             if (isReminderSet) {
@@ -281,7 +287,11 @@ fun AddScreen(navController: NavController) {
                                 val notificationTime = calendar.timeInMillis
 
                                 // Schedule the notification
-                                notificationHandler.scheduleNotification(goalId, notificationInterval, notificationTime)
+                                notificationHandler.scheduleNotification(
+                                    goalId,
+                                    notificationInterval,
+                                    notificationTime
+                                )
                             }
 
 
@@ -292,7 +302,10 @@ fun AddScreen(navController: NavController) {
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 16.dp)
                 ) {
-                    Text("Add Goal", style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold))
+                    Text(
+                        "Add Goal",
+                        style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    )
                 }
             }
         }
