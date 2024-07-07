@@ -11,11 +11,13 @@ class TaskRepository(private val taskDao: TaskDao) {
 
     suspend fun deleteTask(task: Task) = taskDao.deleteTask(task)
 
+    suspend fun deleteTaskById(taskId: Long) = taskDao.deleteTaskById(taskId)
+
     fun getTasksForGoal(goalId: Long): Flow<List<Task>> = taskDao.getTasksForGoal(goalId)
 
     fun getTaskById(taskId: Long): Flow<Task?> = taskDao.getTaskById(taskId)
 
     fun getAllTasks(): Flow<List<Task>> = taskDao.getAllTasks()
 
-    fun getUnfinishedTasks(goalId:Long): Flow<List<Task>> = taskDao.getUnfinishedTasks(goalId)
+    fun getUnfinishedTasks(goalId: Long): Flow<List<Task>> = taskDao.getUnfinishedTasks(goalId)
 }

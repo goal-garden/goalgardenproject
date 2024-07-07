@@ -173,8 +173,8 @@ fun DetailScreen(goalId: Long, navController: NavController) {
                         }
                     }
                     Text(text = "Tasks", modifier = Modifier.padding(5.dp), fontSize = 18.sp)
-                    Box(Modifier.height(300.dp)) {
-                        TaskList(goalWithTasks.tasks)
+                    Box(Modifier.height(250.dp)) {
+                        TaskList(goalWithTasks.tasks,)
                     }
                     Spacer(modifier = Modifier.height(26.dp))
                     Row {

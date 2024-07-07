@@ -97,4 +97,10 @@ class TaskViewModel(
             }
         }
     }
+
+    fun deleteTaskById(taskId: Long) {
+        viewModelScope.launch {
+            repository.deleteTaskById(taskId)
+        }
+    }
 }

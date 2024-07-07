@@ -2,9 +2,7 @@ package com.example.goal_garden_project.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 
@@ -140,7 +138,7 @@ fun EditScreen(goalId: Long, navController: NavController) {
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Box(Modifier.height(200.dp)){
-                        TaskList(tasks+prepreparetasks)
+                        TaskList(tasks+prepreparetasks,)
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
