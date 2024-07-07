@@ -1,6 +1,5 @@
 package com.example.goal_garden_project.screens
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.TimePickerDialog
@@ -10,9 +9,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,15 +18,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -43,9 +37,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,12 +44,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
-import com.example.goal_garden_project.data.repositories.PictureRepository
 import com.example.goal_garden_project.data.repositories.PlantRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.Goal
@@ -72,25 +61,9 @@ import com.example.goal_garden_project.viewmodels.AddViewModelFactory
 import com.example.goal_garden_project.widgets.PlantDropdownMenu
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import com.example.goal_garden_project.widgets.TaskList
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
-
-
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.goal_garden_project.data.daos.GoalDao
-import com.example.goal_garden_project.data.daos.PictureDao
-
-import com.example.goal_garden_project.models.Picture
-import com.example.goal_garden_project.models.PlantWithPictures
-
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,13 +81,13 @@ fun AddScreen(navController: NavController) {
 
     val taskRepository = TaskRepository(taskDao = db.taskDao())
     val factory2 = AddTaskViewModelFactory(repository = repository, repository2 = taskRepository)
-    val viewModel2: AddTaskViewModel = viewModel(factory = factory2)
+    val addTaskViewModel: AddTaskViewModel = viewModel(factory = factory2)
 
     var plantId by remember { mutableStateOf("") }
     var plantName by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var tasks by remember { mutableStateOf("") }
+
     var showDialog by remember { mutableStateOf(false) }
     var prepreparetasks = remember { mutableStateListOf<Task>() }
     val notificationHandler = NotificationHandler(context)
@@ -358,11 +331,11 @@ fun AddScreen(navController: NavController) {
                             isFulfilled = false
                         )
                         coroutineScope.launch {
-                            val goalId= viewModel.addGoal3(goal)
-                            //viewModel2.addGoalAndTasks(goal, prepreparetasks)
+                            val goalId= viewModel.addGoal(goal)
+
                             Toast.makeText(context, "Goal added", Toast.LENGTH_SHORT).show()
                             if (prepreparetasks.isNotEmpty()){
-                                viewModel2.addTasks(goalId, prepreparetasks)
+                                addTaskViewModel.addTasks(goalId, prepreparetasks)
                             }
                             if (isReminderSet) {
                                 // Calculate the time in milliseconds

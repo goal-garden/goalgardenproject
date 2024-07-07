@@ -7,8 +7,7 @@ import com.example.goal_garden_project.data.daos.GoalDao
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.models.Goal
 import com.example.goal_garden_project.models.GoalWithPlantPicture
-import com.example.goal_garden_project.models.GoalWithTasks
-import com.example.goal_garden_project.models.Picture
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -65,12 +64,6 @@ class GoalViewModel(
                 Log.d("GoalViewModel", "Finished goals: $goals")
             }
         }
-//        viewModelScope.launch {
-//            repository.getUnseededGoals().distinctUntilChanged()
-//                .collect { goals ->
-//                    _waitingToBeSeededGoals.value = goals
-//                }
-//        }
     }
 
 }

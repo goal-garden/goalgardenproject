@@ -125,7 +125,9 @@ class NotificationHandler(private val context: Context) {
 
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra("interval", interval)
-            putExtra("goalId", goalId)}
+            putExtra("goalId", goalId)
+        //putExtra("goalImage", goalImage)      //would be better
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             goalId.toInt(), //this must be unique so it doesnt get overwritten the next time
