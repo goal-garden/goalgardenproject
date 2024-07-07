@@ -55,6 +55,7 @@ interface GoalDao {
     SELECT p.pictureId, p.plantId, p.progressionStage, p.imageUrl, g.goalId, g.title
         FROM goals g
         LEFT JOIN pictures p ON g.plantId = p.plantId AND g.progressionStage = p.progressionStage
+        WHERE g.isSeeded = 1
         """
     )
     fun getGoalsWithPlantPictures(): Flow<List<GoalWithPlantPicture>>
@@ -93,13 +94,16 @@ interface GoalDao {
     fun getAllGoalImages(): Flow<List<GoalImageTuple>>
 
     @Transaction
-    @Query("SELECT * FROM goals WHERE isFulfilled = 0")
+    @Query("SELECT * FROM goals WHERE isFulfilled = 0 AND isSeeded=1")
     fun getUnfinishedGoals(): Flow<List<Goal>>
 
     @Transaction
-    @Query("SELECT * FROM goals WHERE isFulfilled = 1")
+    @Query("SELECT * FROM goals WHERE isFulfilled = 1 AND isSeeded=1")
     fun getFinishedGoals(): Flow<List<Goal>>
 
+    @Transaction
+    @Query("SELECT * FROM goals WHERE isSeeded = 0")
+    fun getUnseededGoals(): Flow<List<Goal>>
 
     @Query(
         """
@@ -107,6 +111,7 @@ interface GoalDao {
     FROM goals
     JOIN pictures ON goals.plantId = pictures.plantId
     AND pictures.progressionStage = goals.progressionStage
+    WHERE goals.isSeeded = 1
     """
     )
     fun getAllGoalsWithImageAndTitle(): Flow<List<IdImageTitle>>
