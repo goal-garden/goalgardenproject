@@ -1,5 +1,7 @@
 package com.example.goal_garden_project.viewmodels
 
+import android.graphics.drawable.Icon
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goal_garden_project.data.repositories.GoalRepository
@@ -11,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 //use for plant screen and detail screen!!!!
@@ -26,6 +29,23 @@ class DetailViewModel(
     private val _goalWithPlantPicture = MutableStateFlow<GoalWithPlantPicture?>(value = null)
     val goalWithPlantPicture: StateFlow<GoalWithPlantPicture?> = _goalWithPlantPicture.asStateFlow()
 
+/*
+    fun getGoalImageById(id: Long): String {
+        viewModelScope.launch {
+            repository.getCurrentPlantImage(id).collect(){url->
+                url=url
+            }
+        }
+
+        return url//.collectAsState()
+    }
+
+ */
+    fun getGoalImageById(id: Long): Flow<String> = flow {
+        repository.getCurrentPlantImage(id).collect { url ->
+            emit(url)
+        }
+    }
 
     fun getGoalById(id: Long): StateFlow<GoalWithTasks?> {
         viewModelScope.launch {

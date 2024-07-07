@@ -16,6 +16,8 @@ import androidx.room.PrimaryKey
     )],
 
 
+
+
     indices = [Index(value = ["goalId"]), Index(value = ["taskId"])]
 )
 data class Task(

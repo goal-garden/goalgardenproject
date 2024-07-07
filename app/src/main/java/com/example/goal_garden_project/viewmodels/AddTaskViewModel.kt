@@ -25,17 +25,18 @@ class AddTaskViewModel (private val repository: GoalRepository, private val repo
     val goalsWithImageAndTitle: StateFlow<List<GoalDao.IdImageTitle>?> = _goalsWithImageAndTitle.asStateFlow()
 
 
+    private val _goalId = MutableStateFlow<Long>(0)
+    val goalId: StateFlow<Long> = _goalId.asStateFlow()
+
+
     init {
         viewModelScope.launch {
             repository.getAllGoalsWithImageAndTitle().distinctUntilChanged().collect{
                     goals ->
                 _goalsWithImageAndTitle.value = goals
-
             }
-
         }
     }
-
 
     fun addTask(task: Task) {
         viewModelScope.launch {
@@ -44,15 +45,16 @@ class AddTaskViewModel (private val repository: GoalRepository, private val repo
     }
     fun addTasks(goalId:Long, tasks:List<Task>){
         viewModelScope.launch {
+            println(goalId)
             tasks.forEach { task ->
                 repository2.addTask(task.copy(goalId = goalId))
             }
         }
     }
-
+/*
     fun addGoalAndTasks(goal:Goal, tasks:List<Task>){
         viewModelScope.launch {
-            var goalId =repository.addGoal(goal)
+            var goalId = repository.addGoal(goal)
             println("hello"+ goalId)
             tasks.forEach { task->
                 repository2.addTask(task.copy(goalId = goalId))
@@ -61,5 +63,5 @@ class AddTaskViewModel (private val repository: GoalRepository, private val repo
 
     }
 
-
+ */
 }
