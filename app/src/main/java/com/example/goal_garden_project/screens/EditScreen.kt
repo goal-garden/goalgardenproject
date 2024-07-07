@@ -3,8 +3,12 @@ package com.example.goal_garden_project.screens
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.content.pm.PackageManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 
@@ -24,6 +28,7 @@ import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.Task
 import com.example.goal_garden_project.permissionHandler.rememberNotificationPermissionLauncher
+import com.example.goal_garden_project.reminder.NotificationHandler
 import com.example.goal_garden_project.viewmodels.AddTaskViewModel
 import com.example.goal_garden_project.viewmodels.AddTaskViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
@@ -33,7 +38,9 @@ import com.example.goal_garden_project.widgets.ReminderIntervalDropdown
 import com.example.goal_garden_project.widgets.TaskList
 import com.example.goal_garden_project.widgets.TimePickerButton
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.M)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun EditScreen(goalId: Long, navController: NavController) {
@@ -42,6 +49,8 @@ fun EditScreen(goalId: Long, navController: NavController) {
     val repository = GoalRepository(db.goalDao())
     val factory = DetailViewModelFactory(repository)
     val viewModel: DetailViewModel = viewModel(factory = factory)
+
+    val notificationHandler = NotificationHandler(context)
 
     val taskRepository = TaskRepository(taskDao = db.taskDao())
     val factory2 = AddTaskViewModelFactory(repository = repository, repository2 = taskRepository)
@@ -52,21 +61,14 @@ fun EditScreen(goalId: Long, navController: NavController) {
     }
 
     val specificGoal by viewModel.specificGoal.collectAsState()
-    var isReminderSet by remember { mutableStateOf(specificGoal?.goal?.reminderOn ?: false) }
+    println(specificGoal)
+    var isReminderSet by remember {  mutableStateOf( false)}
+    var wasReminderSet by remember {  mutableStateOf( false)}
 
     // New state variables for time and interval
-    var notificationHour by remember { mutableStateOf(specificGoal?.goal?.reminderTime ?: 0) }
-    var notificationMinute by remember { mutableStateOf(specificGoal?.goal?.reminderTime ?: 0) }
-    var selectedInterval by remember {
-        mutableStateOf(
-            specificGoal?.goal?.reminderInterval ?: 0
-        )
-    }    //das ist eigentlich ein string
-    var notificationInterval by remember {
-        mutableStateOf(
-            specificGoal?.goal?.reminderInterval ?: 0
-        )
-    }
+    var notificationHour by remember { mutableStateOf(0L) }
+    var notificationMinute by remember { mutableStateOf(0L) }
+    var notificationInterval by remember { mutableStateOf(0L)}
 
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -88,8 +90,15 @@ fun EditScreen(goalId: Long, navController: NavController) {
             date = System.currentTimeMillis()
             tasks.clear() // Clear existing tasks
             tasks.addAll(it.tasks)
+            isReminderSet=it.goal.reminderOn
+            wasReminderSet=it.goal.reminderOn
+            notificationHour=(it.goal.reminderTime/(360*1000)).toInt().toLong()
+            notificationMinute=(it.goal.reminderTime/(60*1000)).toInt().toLong()
+            notificationInterval=it.goal.reminderInterval
         }
     }
+    println("reminder")
+    println(isReminderSet)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -101,7 +110,7 @@ fun EditScreen(goalId: Long, navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-
+                .verticalScroll(rememberScrollState())
         ) {
             specificGoal?.let {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -164,6 +173,7 @@ fun EditScreen(goalId: Long, navController: NavController) {
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
+
                     if (isReminderSet) {
                         TimePickerButton(
                             context = context,
@@ -175,19 +185,16 @@ fun EditScreen(goalId: Long, navController: NavController) {
                             },
                             modifier = Modifier     //add styling here if you want
                         )
-                        /*
+
                         ReminderIntervalDropdown(
-                            selectedInterval = selectedInterval,
-                            onIntervalSelected = { interval, value ->
-                                selectedInterval = interval
+                            initValue = notificationInterval,
+                            onIntervalSelected = {value ->
                                 notificationInterval = value
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 8.dp)
                         )
-
-                         */
 
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -219,9 +226,32 @@ fun EditScreen(goalId: Long, navController: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            viewModel.updateGoal(goalId, title, description, date, isFulfilled)
-
+                            viewModel.updateGoal(goalId, title, description, date, isFulfilled, isReminderSet, notificationHour*360*1000+notificationMinute*60*1000, notificationInterval)
                             viewModel2.addTasks(goalId, prepreparetasks)
+
+                            if(isReminderSet!=wasReminderSet){
+                                println("something is different")
+                                if (isReminderSet) {
+                                    // Calculate the time in milliseconds
+                                    val calendar = Calendar.getInstance().apply {
+                                        timeInMillis = System.currentTimeMillis()
+                                        set(Calendar.HOUR_OF_DAY, notificationHour.toInt())
+                                        set(Calendar.MINUTE, notificationMinute.toInt())
+                                        set(Calendar.SECOND, 0)
+                                    }
+                                    val notificationTime = calendar.timeInMillis
+
+                                    // Schedule the notification
+                                    notificationHandler.scheduleNotification(
+                                        goalId,
+                                        notificationInterval,
+                                        notificationTime
+                                    )
+                                }
+                                else {
+                                    notificationHandler.cancelNotification(goalId)
+                                }
+                            }
 
 
                             navController.navigateUp()

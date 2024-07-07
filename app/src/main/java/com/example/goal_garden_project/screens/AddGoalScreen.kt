@@ -93,12 +93,11 @@ fun AddScreen(navController: NavController) {
     val notificationHandler = NotificationHandler(context)
 
     // New state variables for time and interval
-    var notificationHour by remember { mutableStateOf(0) }
-    var notificationMinute by remember { mutableStateOf(0) }
+    var notificationHour by remember { mutableStateOf(0L) }
+    var notificationMinute by remember { mutableStateOf(0L) }
 
     // State for the toggle button
     var isReminderSet by remember { mutableStateOf(false) }
-    var selectedInterval by remember { mutableStateOf("Daily") }
     var notificationInterval by remember { mutableStateOf(AlarmManager.INTERVAL_DAY) }
 
     var seedlater by remember { mutableStateOf(false) }
@@ -228,9 +227,8 @@ fun AddScreen(navController: NavController) {
                         modifier = Modifier     //add styling here if you want
                     )
                     ReminderIntervalDropdown(
-                        selectedInterval = selectedInterval,
-                        onIntervalSelected = { interval, value ->
-                            selectedInterval = interval
+                        initValue = notificationInterval,
+                        onIntervalSelected = { value ->
                             notificationInterval = value
                         },
                         modifier = Modifier
@@ -267,7 +265,10 @@ fun AddScreen(navController: NavController) {
                             description = description,
                             date = System.currentTimeMillis(),
                             isFulfilled = false,
-                            isSeeded = !seedlater
+                            isSeeded = !seedlater,
+                            reminderOn = isReminderSet,
+                            reminderTime = (notificationHour*360*1000)+(notificationMinute*60*1000),
+                            reminderInterval = notificationInterval
                         )
                         coroutineScope.launch {
                             val goalId = viewModel.addGoal(goal)
@@ -280,8 +281,8 @@ fun AddScreen(navController: NavController) {
                                 // Calculate the time in milliseconds
                                 val calendar = Calendar.getInstance().apply {
                                     timeInMillis = System.currentTimeMillis()
-                                    set(Calendar.HOUR_OF_DAY, notificationHour)
-                                    set(Calendar.MINUTE, notificationMinute)
+                                    set(Calendar.HOUR_OF_DAY, notificationHour.toInt())
+                                    set(Calendar.MINUTE, notificationMinute.toInt())
                                     set(Calendar.SECOND, 0)
                                 }
                                 val notificationTime = calendar.timeInMillis

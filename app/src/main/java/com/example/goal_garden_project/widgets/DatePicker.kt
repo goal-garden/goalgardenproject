@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 @Composable
 fun TimePickerButton(
     context: Context,
-    notificationHour: Int,
-    notificationMinute: Int,
-    onTimeSelected: (Int, Int) -> Unit,
+    notificationHour: Long,
+    notificationMinute: Long,
+    onTimeSelected: (Long, Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
@@ -20,10 +20,10 @@ fun TimePickerButton(
             val timePickerDialog = TimePickerDialog(
                 context,
                 { _, hourOfDay, minute ->
-                    onTimeSelected(hourOfDay, minute)
+                    onTimeSelected(hourOfDay.toLong(), minute.toLong())
                 },
-                notificationHour,
-                notificationMinute,
+                notificationHour.toInt(),
+                notificationMinute.toInt(),
                 true
             )
             timePickerDialog.show()
