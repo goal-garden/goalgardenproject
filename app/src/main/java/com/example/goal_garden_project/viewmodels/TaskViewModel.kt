@@ -87,12 +87,24 @@ class TaskViewModel(
                 repository3.getMaxProgressionNumber(goal.plantId).firstOrNull()
                     ?.let { maxProgressionNumber ->
                         if (goal.progressionStage < maxProgressionNumber) {
-                            val updatedGoal =
-                                goal.copy(progressionStage = goal.progressionStage + 1)
-                            repository2.updateGoal(updatedGoal)
+                            if(goal.progressionStage+1==maxProgressionNumber){
+                                val updatedGoal =
+                                    goal.copy(progressionStage = goal.progressionStage + 1, isFulfilled = true)     //mark automatically as fulfilled
+                                repository2.updateGoal(updatedGoal)
+                            }
+                            else{
+                                val updatedGoal =
+                                    goal.copy(progressionStage = goal.progressionStage + 1)
+                                repository2.updateGoal(updatedGoal)
+                            }
+
+
+
+
                         } else {
                             println("max progression reached")
                         }
+
                     }
             }
         }
