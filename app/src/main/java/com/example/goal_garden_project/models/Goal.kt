@@ -30,7 +30,8 @@ data class Goal(
     var isFulfilled: Boolean = false,
     var reminderOn: Boolean = false,
     var reminderTime: Int =0,
-    var reminderInterval: Int =0 //in days
+    var reminderInterval: Int =0, //in days
+    var isSeeded: Boolean = true
 )
 //later we could add parameter to change color of pot or form or whatsoever..
 //    ){

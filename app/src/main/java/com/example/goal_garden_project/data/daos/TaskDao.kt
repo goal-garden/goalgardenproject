@@ -27,12 +27,12 @@ interface TaskDao {
     @Delete
     suspend fun deleteTask(task: Task)
 
+    @Query("DELETE FROM tasks WHERE taskId = :taskId")
+    suspend fun deleteTaskById(taskId: Long)
+
     @Transaction
     @Query("SELECT * FROM tasks")
     fun getAllTasks(): Flow<List<Task>>
-
-
-
 
     @Query("SELECT * FROM tasks WHERE goalId=:goalId and isFulfilled=false")
     fun getUnfinishedTasks(goalId:Long): Flow<List<Task>>

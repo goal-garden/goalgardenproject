@@ -1,14 +1,9 @@
 package com.example.goal_garden_project.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -19,10 +14,7 @@ import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.PictureRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
-import com.example.goal_garden_project.models.Task
 import com.example.goal_garden_project.navigation.Screen
-import com.example.goal_garden_project.viewmodels.GoalViewModel
-import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
 import com.example.goal_garden_project.viewmodels.TaskViewModel
 import com.example.goal_garden_project.viewmodels.TaskViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleBottomBar
@@ -37,17 +29,22 @@ fun TaskScreen(navController: NavController) {
     val taskRepository = TaskRepository(taskDao = db.taskDao())
     val goalRepository = GoalRepository(goalDao = db.goalDao())
     val pictureRepository = PictureRepository(pictureDao = db.pictureDao())
-    val factory = TaskViewModelFactory(repository = taskRepository, repository2 = goalRepository, repository3 = pictureRepository)
+    val factory = TaskViewModelFactory(
+        repository = taskRepository,
+        repository2 = goalRepository,
+        repository3 = pictureRepository
+    )
     val viewModel: TaskViewModel = viewModel(factory = factory)
 
     val tasks by viewModel.tasks.collectAsState()
-
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var taskIdToDelete by remember { mutableStateOf<Long?>(null) }
 
     var filter by remember { mutableStateOf("All") }
     val filteredTasks = when (filter) {
         "Fulfilled" -> tasks.filter { it.isFulfilled }
         "Unfulfilled" -> tasks.filter { !it.isFulfilled }
-        else -> tasks.filter { !it.isFulfilled} //tasks - if you want to have all tasks
+        else -> tasks.filter { !it.isFulfilled } //tasks - if you want to have all tasks
     }
 
     Scaffold(
@@ -65,7 +62,47 @@ fun TaskScreen(navController: NavController) {
             FilterButtons(filter) { selectedFilter ->
                 filter = selectedFilter
             }
-            TaskList(filteredTasks)
+            TaskList(filteredTasks, onClick = { taskId ->
+                taskIdToDelete = taskId
+                showDeleteConfirmation = true
+            })
+            if (showDeleteConfirmation) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showDeleteConfirmation = false
+                        taskIdToDelete = null
+                    },
+                    title = {
+                        Text(text = "Confirm Delete")
+                    },
+                    text = {
+                        Text("Are you sure you want to delete this goal?")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                taskIdToDelete?.let { taskId ->
+                                    viewModel.deleteTaskById(taskId)
+                                    showDeleteConfirmation = false
+                                    taskIdToDelete = null
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                        ) {
+                            Text("Delete", color = Color.White)
+                        }
+                    },
+                    dismissButton = {
+                        Button(
+                            onClick = {
+                                showDeleteConfirmation = false
+                                taskIdToDelete = null
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                    })
+            }
         }
     }
 }
@@ -81,7 +118,7 @@ fun FilterButtons(currentFilter: String, onFilterSelected: (String) -> Unit) {
         Button(
             onClick = { onFilterSelected("Unfulfilled") },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (currentFilter == "Unfulfilled")  MaterialTheme.colorScheme.primaryContainer else Color.LightGray,
+                containerColor = if (currentFilter == "Unfulfilled") MaterialTheme.colorScheme.primaryContainer else Color.LightGray,
                 contentColor = Color.DarkGray
             )
         ) {

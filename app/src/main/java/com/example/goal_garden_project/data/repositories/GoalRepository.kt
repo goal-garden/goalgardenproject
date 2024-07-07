@@ -40,8 +40,6 @@ class GoalRepository(private val goalDao: GoalDao) {
     fun getGoalById(id: Long): Flow<Goal?> = goalDao.getGoalById(id)
     fun getFinishedGoals(): Flow<List<Goal>> = goalDao.getFinishedGoals()
     fun getUnfinishedGoals(): Flow<List<Goal>> = goalDao.getUnfinishedGoals()
-
-
+    fun getUnseededGoals(): Flow<List<Goal>> = goalDao.getUnseededGoals()
     fun getAllGoalsWithImageAndTitle(): Flow<List<GoalDao.IdImageTitle>> = goalDao.getAllGoalsWithImageAndTitle()
-
 }
