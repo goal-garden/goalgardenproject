@@ -26,7 +26,7 @@ data class Goal(
     var progressionStage: Int = 0, //so the right picture gets displayed, initially 0
     var title: String,
     var description: String,
-    var date: Int,      //save as milliseconds and convert it then to date
+    var date: Long,      //save as milliseconds and convert it then to date
     var isFulfilled: Boolean = false,
     var reminderOn: Boolean = false,
     var reminderTime: Int =0,

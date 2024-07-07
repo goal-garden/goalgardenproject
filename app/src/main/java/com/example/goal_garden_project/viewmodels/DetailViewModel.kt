@@ -44,7 +44,7 @@ class DetailViewModel(
         return _goalWithPlantPicture.asStateFlow()
     }
 
-    fun updateGoal(goalId: Long, title: String, description: String, date: Int, isFulfilled: Boolean) {
+    fun updateGoal(goalId: Long, title: String, description: String, date: Long, isFulfilled: Boolean) {
         viewModelScope.launch {
             val currentGoal = repository.getGoalById(goalId)
             currentGoal.collect { goal ->
