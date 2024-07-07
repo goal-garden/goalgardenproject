@@ -1,5 +1,7 @@
 package com.example.goal_garden_project.viewmodels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goal_garden_project.data.daos.GoalDao
@@ -43,11 +45,36 @@ class AddViewModel (private val repository: GoalRepository, private val reposito
     }
     fun addGoal(goal: Goal) {
         viewModelScope.launch {
-            _goalId.value=repository.addGoal(goal)
-            println(_goalId.value)
-        }
+            repository.addGoal(goal).collect{id ->_goalId.value}
+
+            println("hello"+ goalId)
+                    }
     }
 
+    fun addGoal2(goal: Goal): Long{
+        viewModelScope.launch {
+            goalId2=repository.addGoal2(goal)
+            println("hello new "+ goalId2)
+        }
+        return goalId2
+    }
+
+    fun insertGoal(goal: Goal): LiveData<Long> {
+        val result = MutableLiveData<Long>()
+        viewModelScope.launch {
+            repository.addGoal(goal).collect { goalId ->
+                result.postValue(goalId)
+            }
+        }
+        return result
+    }
+    suspend fun addGoal3(goal: Goal): Long {
+        var goalId: Long = -1
+        repository.addGoal(goal).collect {
+            goalId = it
+        }
+        return goalId
+    }
 
 
 }

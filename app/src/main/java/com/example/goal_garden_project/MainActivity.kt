@@ -27,12 +27,5 @@ class MainActivity : ComponentActivity() {
         setContent {
             Navigation()
         }
-        val notificationHandler = NotificationHandler(this)
-
-        notificationHandler.scheduleNotification()
-
-            // Initialize WorkManager
-            //WorkManager.initialize(this, Configuration.Builder().build())
-
     }
 }
