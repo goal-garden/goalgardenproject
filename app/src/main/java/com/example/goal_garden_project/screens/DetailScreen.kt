@@ -72,6 +72,7 @@ import com.example.goal_garden_project.viewmodels.TaskViewModel
 import com.example.goal_garden_project.viewmodels.TaskViewModelFactory
 import com.example.goal_garden_project.widgets.AchievementProgress
 import com.example.goal_garden_project.widgets.ActionButton
+import com.example.goal_garden_project.widgets.GoalCard
 import com.example.goal_garden_project.widgets.TaskList
 import java.io.File
 import java.io.FileOutputStream
@@ -174,7 +175,7 @@ fun DetailScreen(goalId: Long, navController: NavController) {
                     }
                     Text(text = "Tasks", modifier = Modifier.padding(5.dp), fontSize = 18.sp)
                     Box(Modifier.height(250.dp)) {
-                        TaskList(goalWithTasks.tasks,)
+                        TaskList(goalWithTasks.tasks)
                     }
                     Spacer(modifier = Modifier.height(26.dp))
                     Row {
@@ -237,76 +238,6 @@ fun DetailScreen(goalId: Long, navController: NavController) {
     }
 }
 
-@Composable
-fun GoalCard(
-    goalWithTasks: GoalWithTasks,
-    imageResourceId: Int,
-    totalPicturesNumber: Int,
-    onCapture: (Bitmap) -> Unit
-) {
-    val context = LocalContext.current
-    val composeView = remember { ComposeView(context) }
-    Log.d("total pic n", "$totalPicturesNumber")
-    // Set content of ComposeView
-    composeView.setContent {
-        Card(
-            modifier = Modifier.width(IntrinsicSize.Min),
-            elevation = CardDefaults.cardElevation(4.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = goalWithTasks.goal.title,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Image(
-                    painter = painterResource(id = imageResourceId),
-                    contentDescription = "Goal Image",
-                    modifier = Modifier
-                        .size(70.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = "Description: ${goalWithTasks.goal.description}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(
-                    text = "Status: ${if (goalWithTasks.goal.isFulfilled) "Completed" else "In Progress"}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                val progress =
-                    (goalWithTasks.goal.progressionStage.toFloat() / totalPicturesNumber * 100).coerceAtMost(
-                        100f
-                    )
-                Log.d("sssss", "${goalWithTasks.goal.progressionStage.toFloat()}")
-                AchievementProgress(title = "", progress = progress)
-            }
-        }
-    }
-
-    // Create and return the bitmap
-    LaunchedEffect(Unit) {
-        val bitmap = Bitmap.createBitmap(
-            composeView.width,
-            composeView.height,
-            Bitmap.Config.ARGB_8888
-        )
-        val canvas = android.graphics.Canvas(bitmap)
-        composeView.draw(canvas)
-        onCapture(bitmap)
-    }
-
-    // Add the ComposeView to the layout
-    AndroidView(
-        factory = { composeView },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-    )
-}
 
 fun saveBitmapToFile(context: Context, bitmap: Bitmap): File {
     val file = File(context.cacheDir, "${UUID.randomUUID()}.png")

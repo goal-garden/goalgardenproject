@@ -1,5 +1,6 @@
 package com.example.goal_garden_project.widgets
 
+import android.app.AlarmManager
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -70,6 +71,75 @@ fun PlantDropdownMenu(
                     onClick = {
                         onPlantSelected(plant.id.toString(), plant.title)
                         expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ReminderIntervalDropdown(
+    selectedInterval: String,
+    onIntervalSelected: (String, Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    val intervalOptions = listOf(
+        "Every Minute",
+        "Daily",
+        "Every 2 days",
+        "Every 3 days",
+        "Every 4 days",
+        "Every 5 days",
+        "Every 6 days",
+        "Every week"
+    )
+
+    val intervalValues = mapOf(
+        "Every Minute" to 60 * 1000L,
+        "Daily" to AlarmManager.INTERVAL_DAY,
+        "Every 2 days" to 2 * AlarmManager.INTERVAL_DAY,
+        "Every 3 days" to 3 * AlarmManager.INTERVAL_DAY,
+        "Every 4 days" to 4 * AlarmManager.INTERVAL_DAY,
+        "Every 5 days" to 5 * AlarmManager.INTERVAL_DAY,
+        "Every 6 days" to 6 * AlarmManager.INTERVAL_DAY,
+        "Every week" to AlarmManager.INTERVAL_DAY * 7
+    )
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+    ) {
+        TextField(
+            value = selectedInterval,
+            onValueChange = { /* No-op */ },
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+                .clickable { expanded = true },
+            readOnly = true,
+            label = { Text("Interval") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            intervalOptions.forEach { interval ->
+                DropdownMenuItem(
+                    text = { Text(text = interval) },
+                    onClick = {
+                        expanded = false
+                        onIntervalSelected(interval, intervalValues[interval] ?: AlarmManager.INTERVAL_DAY)
                     }
                 )
             }

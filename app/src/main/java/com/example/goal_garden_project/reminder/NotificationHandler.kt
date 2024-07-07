@@ -155,46 +155,29 @@ class NotificationHandler(private val context: Context) {
         }
 
     }
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun cancelNotification(goalId: Long) {
+        with(NotificationManagerCompat.from(context)) {
+            cancel(goalId.toInt())
+        }
+        cancelScheduledNotification(goalId)
+    }
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun cancelScheduledNotification(goalId: Long) {
+        val alarmManager = context.getSystemService(AlarmManager::class.java)
+        val intent = Intent(context, NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            goalId.toInt(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(pendingIntent)
+    }
 
     private fun requestExactAlarmPermission() {
         val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
         context.startActivity(intent)
-    }
-
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    fun scheduleDailyNotification() {
-        val alarmManager = context.getSystemService(AlarmManager::class.java)
-
-        if (!alarmManager.canScheduleExactAlarms()) {
-            requestExactAlarmPermission()
-            return
-        }
-
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 13)
-            set(Calendar.MINUTE, 2)
-            set(Calendar.SECOND, 0)
-        }
-
-        if (calendar.timeInMillis < System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        val intent = Intent(context, NotificationReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            0,      //this must be unique so it doesnt get overwritten the next time
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            pendingIntent
-        )
     }
 
 
