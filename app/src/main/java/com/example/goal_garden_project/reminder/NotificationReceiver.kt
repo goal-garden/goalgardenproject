@@ -22,7 +22,7 @@ class NotificationReceiver : BroadcastReceiver() {
         // Handle the notification logic here
         //Toast.makeText(context, "Time to work on your goal!", Toast.LENGTH_SHORT).show()
         val notificationHandler = NotificationHandler(context)
-        notificationHandler.sendNotification("Goal Reminder", "Don't forget to work on your goals!")
+        notificationHandler.sendNotification(goalId,"Goal Reminder"+goalId.toString(), "Don't forget to work on your goals!")
         Log.d("NotificationReceiver", "Notification sent")
 
 

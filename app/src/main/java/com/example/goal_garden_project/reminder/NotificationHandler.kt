@@ -48,7 +48,7 @@ class NotificationHandler(private val context: Context) {
         }
     }
 
-    fun sendNotification(title: String, message: String) {
+    fun sendNotification( goalId: Long, title: String, message: String) {
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.erd1)
             .setContentTitle(title)
@@ -66,7 +66,7 @@ class NotificationHandler(private val context: Context) {
                 //request permission
                 return
             }
-            notify(1, notification)
+            notify(goalId.toInt(), notification)
 
         }
     }
