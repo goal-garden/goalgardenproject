@@ -17,6 +17,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val interval = intent.getLongExtra("interval", 0L)
         val time = intent.getLongExtra("time", 0L)
         val goalId = intent.getLongExtra("goalId", 0L)
+        //val image = intent.getStringExtra("goalImage") for later maybe
 
 
         // Handle the notification logic here

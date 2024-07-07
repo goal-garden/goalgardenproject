@@ -1,6 +1,6 @@
 package com.example.goal_garden_project.viewmodels
 
-import androidx.compose.runtime.collectAsState
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goal_garden_project.data.repositories.GoalRepository
