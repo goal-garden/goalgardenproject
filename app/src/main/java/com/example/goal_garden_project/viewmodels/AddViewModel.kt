@@ -51,23 +51,7 @@ class AddViewModel (private val repository: GoalRepository, private val reposito
                     }
     }
 
-    fun addGoal2(goal: Goal): Long{
-        viewModelScope.launch {
-            goalId2=repository.addGoal2(goal)
-            println("hello new "+ goalId2)
-        }
-        return goalId2
-    }
 
-    fun insertGoal(goal: Goal): LiveData<Long> {
-        val result = MutableLiveData<Long>()
-        viewModelScope.launch {
-            repository.addGoal(goal).collect { goalId ->
-                result.postValue(goalId)
-            }
-        }
-        return result
-    }
     suspend fun addGoal3(goal: Goal): Long {
         var goalId: Long = -1
         repository.addGoal(goal).collect {

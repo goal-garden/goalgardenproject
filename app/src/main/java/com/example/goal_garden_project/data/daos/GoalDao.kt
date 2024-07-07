@@ -79,7 +79,7 @@ interface GoalDao {
         LIMIT 1
     """
     )
-    fun getCurrentPlantImageUrl(goalId: Long): Flow<String?>
+    fun getCurrentPlantImageUrl(goalId: Long): Flow<String>
 
 
     @Query(

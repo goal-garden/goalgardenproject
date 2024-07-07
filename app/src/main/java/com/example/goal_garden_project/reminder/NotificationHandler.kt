@@ -9,6 +9,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
@@ -17,12 +18,29 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.goal_garden_project.R
+import com.example.goal_garden_project.data.AppDatabase
+import com.example.goal_garden_project.data.repositories.GoalRepository
+import com.example.goal_garden_project.data.repositories.PlantRepository
+import com.example.goal_garden_project.viewmodels.AddViewModel
+import com.example.goal_garden_project.viewmodels.AddViewModelFactory
+import com.example.goal_garden_project.viewmodels.DetailViewModel
+import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
+import com.example.goal_garden_project.viewmodels.GoalViewModel
+import com.example.goal_garden_project.viewmodels.GoalViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -30,7 +48,16 @@ class NotificationHandler(private val context: Context) {
     private val channelId = "goal_notifications"
     private val channelName = "Goal Notifications"
     private val channelDescription = "Notifications for goal achievements"
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
+    val db = AppDatabase.getDatabase(context)
+
+    val goalRepository = GoalRepository(goalDao = db.goalDao())
+    fun getGoalImageById(id: Long): Flow<String> = flow {
+        goalRepository.getCurrentPlantImage(id).collect { url ->
+            emit(url)
+        }
+    }
 
     init {
         createNotificationChannel()
@@ -49,26 +76,37 @@ class NotificationHandler(private val context: Context) {
     }
 
     fun sendNotification( goalId: Long, title: String, message: String) {
-        val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.erd1)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
+
+        coroutineScope.launch {
+            // Collect the URL from getGoalImageById
+            val url = getGoalImageById(goalId).first() // Use first() to get the first emitted value
+
+            val notification = NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(
+                    context.resources.getIdentifier(
+                        url, "drawable", context.packageName
+                    )
+                )
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build()
 
 
-        with(NotificationManagerCompat.from(context)) {
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                //request permission
-                return
+            with(NotificationManagerCompat.from(context)) {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    //request permission
+
+                }
+                notify(goalId.toInt(), notification)
+
             }
-            notify(goalId.toInt(), notification)
 
-        }
+    }
     }
 
 
