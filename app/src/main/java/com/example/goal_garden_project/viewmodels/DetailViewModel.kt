@@ -44,7 +44,7 @@ class DetailViewModel(
         return _goalWithPlantPicture.asStateFlow()
     }
 
-    fun updateGoal(goalId: Long, title: String, description: String, date: Int, isFulfilled: Boolean) {
+    fun updateGoal(goalId: Long, title: String, description: String, date: Long, isFulfilled: Boolean, isReminderSet: Boolean, reminderTime:Long, reminderInterval:Long) {
         viewModelScope.launch {
             val currentGoal = repository.getGoalById(goalId)
             currentGoal.collect { goal ->
@@ -56,7 +56,10 @@ class DetailViewModel(
                         title = title,
                         description = description,
                         date = date,
-                        isFulfilled = isFulfilled
+                        isFulfilled = isFulfilled,
+                        reminderOn = isReminderSet,
+                        reminderTime = reminderTime,
+                        reminderInterval=reminderInterval
                     )
                     repository.updateGoal(updatedGoal)
                 }

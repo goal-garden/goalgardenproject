@@ -82,8 +82,8 @@ fun PlantDropdownMenu(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReminderIntervalDropdown(
-    selectedInterval: String,
-    onIntervalSelected: (String, Long) -> Unit,
+    initValue: Long,
+    onIntervalSelected: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -116,7 +116,7 @@ fun ReminderIntervalDropdown(
         modifier = modifier
     ) {
         TextField(
-            value = selectedInterval,
+            value = intervalValues.entries.find { it.value == initValue }?.key?:"", //selectedInterval,
             onValueChange = { /* No-op */ },
             modifier = Modifier
                 .menuAnchor()
@@ -139,7 +139,7 @@ fun ReminderIntervalDropdown(
                     text = { Text(text = interval) },
                     onClick = {
                         expanded = false
-                        onIntervalSelected(interval, intervalValues[interval] ?: AlarmManager.INTERVAL_DAY)
+                        onIntervalSelected(intervalValues[interval] ?: AlarmManager.INTERVAL_DAY)
                     }
                 )
             }
