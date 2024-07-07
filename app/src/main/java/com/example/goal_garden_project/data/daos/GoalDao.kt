@@ -116,5 +116,8 @@ interface GoalDao {
     )
     fun getAllGoalsWithImageAndTitle(): Flow<List<IdImageTitle>>
 
-
+    @Query(
+        "SELECT max(progressionStage) FROM pictures GROUP BY plantId HAVING plantId = :plantId"
+    )
+    fun getMaxProgressionNumber(plantId: Long): Flow<Int>
 }

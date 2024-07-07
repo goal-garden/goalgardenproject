@@ -47,12 +47,30 @@ class DetailViewModel(
     fun updateGoal(goalId: Long, title: String, description: String, date: Long, isFulfilled: Boolean, isReminderSet: Boolean, reminderTime:Long, reminderInterval:Long) {
         viewModelScope.launch {
             val currentGoal = repository.getGoalById(goalId)
-            currentGoal.collect { goal ->
+            currentGoal.collect { goal ->       //doesnt work??
+                //this is for automatically setting to the last image when is fulfilled is marked
+                var progressionNumber:Int=goal?.progressionStage?:0
+                if (goal?.isFulfilled!=isFulfilled){    //if is a change
+                    if(isFulfilled){
+                        println("is now manually fulfilled and wans't before")
+                        goal?.let {
+                            repository.getMaxProgressionNumber(it.plantId).collect { maxProgression ->
+                                progressionNumber = maxProgression
+                                println(progressionNumber)      //this works still
+                            }
+                        }
+                    }
+                    else{
+                        progressionNumber=0      //set it to the beginning when the plant was automatically marked as done but isn't actually, the pictures will start from zero again
+                    }
+                }
+
+
                 goal?.let {
                     val updatedGoal = Goal(
                         goalId = it.goalId,
                         plantId = it.plantId,
-                        progressionStage = it.progressionStage,
+                        progressionStage = progressionNumber, //it.progressionStage,//
                         title = title,
                         description = description,
                         date = date,
@@ -66,6 +84,7 @@ class DetailViewModel(
             }
         }
     }
+
     fun deleteGoal(goalId: Long) {
         viewModelScope.launch {
             repository.deleteGoalById(goalId)

@@ -12,11 +12,12 @@ import kotlinx.coroutines.flow.flow
 class GoalRepository(private val goalDao: GoalDao) {
 
     // Suspend indicates a long running async operation - coroutines
-    fun addGoal(goal: Goal): Flow<Long> =flow{
+    fun addGoal(goal: Goal): Flow<Long> = flow {
         val goalId = goalDao.addGoal(goal)
-         emit(goalId)
+        emit(goalId)
     }   //to make a flow which has a normal return typ typically
-    suspend fun addGoal2(goal:Goal):Long {
+
+    suspend fun addGoal2(goal: Goal): Long {
         return goalDao.addGoal(goal)
     }
 
@@ -41,5 +42,7 @@ class GoalRepository(private val goalDao: GoalDao) {
     fun getFinishedGoals(): Flow<List<Goal>> = goalDao.getFinishedGoals()
     fun getUnfinishedGoals(): Flow<List<Goal>> = goalDao.getUnfinishedGoals()
     fun getUnseededGoals(): Flow<List<Goal>> = goalDao.getUnseededGoals()
-    fun getAllGoalsWithImageAndTitle(): Flow<List<GoalDao.IdImageTitle>> = goalDao.getAllGoalsWithImageAndTitle()
+    fun getAllGoalsWithImageAndTitle(): Flow<List<GoalDao.IdImageTitle>> =
+        goalDao.getAllGoalsWithImageAndTitle()
+    fun getMaxProgressionNumber(plantId: Long): Flow<Int> = goalDao.getMaxProgressionNumber(plantId)
 }
