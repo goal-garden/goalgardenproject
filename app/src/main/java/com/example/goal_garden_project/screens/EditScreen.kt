@@ -3,8 +3,12 @@ package com.example.goal_garden_project.screens
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.content.pm.PackageManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 
@@ -36,6 +40,7 @@ import com.example.goal_garden_project.widgets.TimePickerButton
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.M)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun EditScreen(goalId: Long, navController: NavController) {
@@ -71,7 +76,7 @@ fun EditScreen(goalId: Long, navController: NavController) {
     var date by remember { mutableStateOf(0L) }
     var tasks by remember { mutableStateOf(mutableStateListOf<Task>()) }
     var showDialog by remember { mutableStateOf(false) }
-    var prepreparetasks = remember { mutableStateListOf<Task>()}
+    var prepreparetasks = remember { mutableStateListOf<Task>() }
 
     val notificationPermissionLauncher = rememberNotificationPermissionLauncher()
 
@@ -82,7 +87,7 @@ fun EditScreen(goalId: Long, navController: NavController) {
             title = it.goal.title
             description = it.goal.description
             isFulfilled = it.goal.isFulfilled
-            date = it.goal.date
+            date = System.currentTimeMillis()
             tasks.clear() // Clear existing tasks
             tasks.addAll(it.tasks)
             isReminderSet=it.goal.reminderOn
@@ -105,7 +110,7 @@ fun EditScreen(goalId: Long, navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-
+                .verticalScroll(rememberScrollState())
         ) {
             specificGoal?.let {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -122,13 +127,13 @@ fun EditScreen(goalId: Long, navController: NavController) {
                         label = { Text("Description") },
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = date.toString(),
-                        onValueChange = { date = it.toLongOrNull()?:0},
-                        label = { Text("Date") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+//                    Spacer(modifier = Modifier.height(8.dp))
+//                    OutlinedTextField(
+//                        value = date.toString(),
+//                        onValueChange = { date = it.toLongOrNull() ?: 0 },
+//                        label = { Text("Date") },
+//                        modifier = Modifier.fillMaxWidth()
+//                    )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -151,7 +156,8 @@ fun EditScreen(goalId: Long, navController: NavController) {
                         Text("Set Reminder", modifier = Modifier.weight(1f))
                         Switch(
                             checked = isReminderSet,
-                            onCheckedChange = { isReminderSet = it
+                            onCheckedChange = {
+                                isReminderSet = it
                                 coroutineScope.launch {
                                     if (ContextCompat.checkSelfPermission(
                                             context,
@@ -162,12 +168,13 @@ fun EditScreen(goalId: Long, navController: NavController) {
                                     } else {
                                         notificationPermissionLauncher.launch("android.permission.POST_NOTIFICATIONS")
                                     }
-                                }}
+                                }
+                            }
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    if (isReminderSet){
 
+                    if (isReminderSet) {
                         TimePickerButton(
                             context = context,
                             notificationHour = notificationHour,
@@ -213,8 +220,8 @@ fun EditScreen(goalId: Long, navController: NavController) {
 
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    Box(Modifier.height(200.dp)){
-                        TaskList(tasks+prepreparetasks,)
+                    Box(Modifier.height(200.dp)) {
+                        TaskList(tasks + prepreparetasks)
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(

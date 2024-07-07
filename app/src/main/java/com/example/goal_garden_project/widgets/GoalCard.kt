@@ -1,5 +1,6 @@
 package com.example.goal_garden_project.widgets
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.Log
@@ -29,6 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.goal_garden_project.models.GoalWithTasks
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
 @Composable
@@ -67,6 +70,11 @@ fun GoalCard(
                     text = "Description: ${goalWithTasks.goal.description}",
                     style = MaterialTheme.typography.bodyMedium
                 )
+                val date = formatTimestampAsString(goalWithTasks.goal.date)
+                Text(
+                    text = "Date created: $date",
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Text(
                     text = "Status: ${if (goalWithTasks.goal.isFulfilled) "Completed" else "In Progress"}",
                     style = MaterialTheme.typography.bodyMedium
@@ -100,4 +108,11 @@ fun GoalCard(
             .fillMaxWidth()
             .padding(10.dp)
     )
+}
+
+@SuppressLint("SimpleDateFormat")
+fun formatTimestampAsString(timestamp: Long): String {
+    val date = Date(timestamp)
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+    return dateFormat.format(date)
 }
