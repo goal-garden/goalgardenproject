@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -68,6 +69,10 @@ fun RewardsScreen(navController: NavController) {
     val completedGoals by goalViewModel.finishedGoals.collectAsState()
     val allTasks by taskViewModel.tasks.collectAsState()
     val completedTasks = allTasks.filter { it.isFulfilled }
+
+    LaunchedEffect(key1 = null) {
+        goalViewModel.fetchFinishedGoals()
+    }
 
     Scaffold(
         modifier = Modifier
