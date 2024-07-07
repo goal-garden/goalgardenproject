@@ -43,6 +43,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
+import com.example.goal_garden_project.permissionHandler.rememberNotificationPermissionLauncher
+
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.PlantRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
@@ -64,7 +66,7 @@ import java.util.Calendar
 import java.util.Date
 
 @SuppressLint("CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class)
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun AddScreen(navController: NavController) {
@@ -99,18 +101,8 @@ fun AddScreen(navController: NavController) {
     var selectedInterval by remember { mutableStateOf("Daily") }
     var notificationInterval by remember { mutableStateOf(AlarmManager.INTERVAL_DAY) }
 
-
-
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-
-        } else {
-            // Handle the case where the permission was denied
-            Toast.makeText(context, "Notification permission denied", Toast.LENGTH_SHORT).show()
-        }
-    }
+    var seedlater by remember { mutableStateOf(false) }
+    val notificationPermissionLauncher = rememberNotificationPermissionLauncher()
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -203,9 +195,20 @@ fun AddScreen(navController: NavController) {
                                 ) {
                                     println("postnotification granted")
                                 } else {
-                                    requestPermissionLauncher.launch("android.permission.POST_NOTIFICATIONS")
+                                    notificationPermissionLauncher.launch("android.permission.POST_NOTIFICATIONS")
                                 }
                             }}
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                ) {
+                    Text("Seed Later", modifier = Modifier.weight(1f))
+                    Switch(
+                        checked = seedlater,
+                        onCheckedChange = { seedlater = it
+                            }
                     )
                 }
 

@@ -1,6 +1,8 @@
 package com.example.goal_garden_project.screens
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,22 +18,28 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.goal_garden_project.data.AppDatabase
 import com.example.goal_garden_project.data.repositories.GoalRepository
 import com.example.goal_garden_project.data.repositories.TaskRepository
 import com.example.goal_garden_project.models.Task
+import com.example.goal_garden_project.permissionHandler.rememberNotificationPermissionLauncher
 import com.example.goal_garden_project.viewmodels.AddTaskViewModel
 import com.example.goal_garden_project.viewmodels.AddTaskViewModelFactory
 import com.example.goal_garden_project.widgets.SimpleTopBar
 import com.example.goal_garden_project.viewmodels.DetailViewModel
 import com.example.goal_garden_project.viewmodels.DetailViewModelFactory
+import com.example.goal_garden_project.widgets.ReminderIntervalDropdown
 import com.example.goal_garden_project.widgets.TaskList
+import com.example.goal_garden_project.widgets.TimePickerButton
+import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun EditScreen(goalId: Long, navController: NavController) {
+    val context = LocalContext.current
     val db = AppDatabase.getDatabase(LocalContext.current)
     val repository = GoalRepository(db.goalDao())
     val factory = DetailViewModelFactory(repository)
@@ -46,6 +54,13 @@ fun EditScreen(goalId: Long, navController: NavController) {
     }
 
     val specificGoal by viewModel.specificGoal.collectAsState()
+    var isReminderSet by remember {  mutableStateOf( specificGoal?.goal?.reminderOn?:false)}
+
+    // New state variables for time and interval
+    var notificationHour by remember { mutableStateOf(specificGoal?.goal?.reminderTime?:0) }
+    var notificationMinute by remember { mutableStateOf(specificGoal?.goal?.reminderTime?:0) }
+    var selectedInterval by remember { mutableStateOf(specificGoal?.goal?.reminderInterval?:0) }    //das ist eigentlich ein string
+    var notificationInterval by remember { mutableStateOf(specificGoal?.goal?.reminderInterval?:0)}
 
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -54,6 +69,10 @@ fun EditScreen(goalId: Long, navController: NavController) {
     var tasks by remember { mutableStateOf(mutableStateListOf<Task>()) }
     var showDialog by remember { mutableStateOf(false) }
     var prepreparetasks = remember { mutableStateListOf<Task>()}
+
+    val notificationPermissionLauncher = rememberNotificationPermissionLauncher()
+
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(specificGoal) {
         specificGoal?.let {
@@ -115,7 +134,54 @@ fun EditScreen(goalId: Long, navController: NavController) {
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    ) {
+                        Text("Set Reminder", modifier = Modifier.weight(1f))
+                        Switch(
+                            checked = isReminderSet,
+                            onCheckedChange = { isReminderSet = it
+                                coroutineScope.launch {
+                                    if (ContextCompat.checkSelfPermission(
+                                            context,
+                                            "android.permission.POST_NOTIFICATIONS"
+                                        ) == PackageManager.PERMISSION_GRANTED
+                                    ) {
+                                        println("postnotification granted")
+                                    } else {
+                                        notificationPermissionLauncher.launch("android.permission.POST_NOTIFICATIONS")
+                                    }
+                                }}
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    if (isReminderSet){
+                        TimePickerButton(
+                            context = context,
+                            notificationHour = notificationHour,
+                            notificationMinute = notificationMinute,
+                            onTimeSelected = { hour, minute ->
+                                notificationHour = hour
+                                notificationMinute = minute
+                            },
+                            modifier = Modifier     //add styling here if you want
+                        )
+                        /*
+                        ReminderIntervalDropdown(
+                            selectedInterval = selectedInterval,
+                            onIntervalSelected = { interval, value ->
+                                selectedInterval = interval
+                                notificationInterval = value
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp)
+                        )
 
+                         */
+
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
